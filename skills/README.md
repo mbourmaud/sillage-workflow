@@ -5,7 +5,7 @@ lifecycle and authority model. Skills are published independently so projects
 install only the judgment they need; the deterministic CLI and schemas remain
 optional companions.
 
-## Released in 0.1.0
+## Released in 0.2.0
 
 ### `researching-with-evidence`
 

@@ -14,7 +14,7 @@ import (
 	"github.com/mbourmaud/sillage-workflow/internal/workflow"
 )
 
-var version = "0.1.0-dev"
+var version = "0.2.0-dev"
 
 func main() {
 	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
