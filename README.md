@@ -16,9 +16,37 @@ Sillage combines:
 
 ## Status
 
-Sillage is pre-1.0. Version 0.1 establishes the public protocol, cold-start
+Sillage is pre-1.0. Version 0.1.0-rc.1 establishes the public protocol, cold-start
 contract, lifecycle validator, and first skill evaluation fixtures. Interfaces
 may evolve as the workflow is exercised on real projects.
+
+## Install the release candidate in Codex
+
+The first public test installs the `researching-with-evidence` skill through
+the Codex plugin marketplace. It does not install the optional Go CLI.
+
+```sh
+codex plugin marketplace add mbourmaud/sillage-workflow --ref codex/sillage-v0.1
+codex plugin add sillage-workflow@sillage
+```
+
+Start a new Codex task, then ask:
+
+```text
+Use the researching-with-evidence skill. Determine whether Agent Plugins 1.0
+replaces Agent Skills or packages them. Use primary sources, distinguish facts
+from inference, and return an evidence packet without creating repository docs.
+```
+
+The expected result names the skill, states the research question and consumer,
+uses current primary sources with dates or versions, distinguishes inference
+and unknowns, and proposes no durable document unless one has a clear owner.
+Remove the test installation with:
+
+```sh
+codex plugin remove sillage-workflow@sillage
+codex plugin marketplace remove sillage
+```
 
 ## Core lifecycle
 
@@ -66,10 +94,12 @@ boundary used by adopters.
 ## Agent Plugin
 
 The root [`plugin.json`](plugin.json) packages Sillage skills according to
-Agent Plugins 1.0. Agent Plugins is a distribution adapter, not the Sillage
-runtime contract: the Go CLI, task schemas, and project documents remain
-independently usable. No MCP server is bundled until a concrete tool-server
-need exists.
+Agent Plugins 1.0. The Codex marketplace adapter lives in
+[`plugins/sillage-workflow`](plugins/sillage-workflow); contract tests keep its
+generated skill payload identical to the canonical source under `skills/`.
+Agent Plugins is a distribution adapter, not the Sillage runtime contract: the
+Go CLI, task schemas, and project documents remain independently usable. No MCP
+server is bundled until a concrete tool-server need exists.
 
 ## Skills
 

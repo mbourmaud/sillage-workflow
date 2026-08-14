@@ -1,6 +1,8 @@
 package contracts
 
 import (
+	"bytes"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -62,6 +64,80 @@ func TestPublishedJSONContractsAcceptRepositoryExamples(t *testing.T) {
 				t.Fatalf("validate %s against %s: %v", test.instance, test.schema, err)
 			}
 		})
+	}
+}
+
+func TestCodexPluginBundleMatchesCanonicalSkill(t *testing.T) {
+	t.Parallel()
+
+	root := repositoryRoot(t)
+	for _, relative := range []string{"SKILL.md", "agents/openai.yaml"} {
+		canonical, err := os.ReadFile(filepath.Join(root, "skills", "researching-with-evidence", relative))
+		if err != nil {
+			t.Fatal(err)
+		}
+		bundled, err := os.ReadFile(filepath.Join(root, "plugins", "sillage-workflow", "skills", "researching-with-evidence", relative))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.Equal(canonical, bundled) {
+			t.Fatalf("bundled %s drifted from the canonical skill", relative)
+		}
+	}
+}
+
+func TestCodexMarketplacePointsToInstallableBundle(t *testing.T) {
+	t.Parallel()
+
+	root := repositoryRoot(t)
+	var marketplace struct {
+		Name    string `json:"name"`
+		Plugins []struct {
+			Name   string `json:"name"`
+			Source struct {
+				Kind string `json:"source"`
+				Path string `json:"path"`
+			} `json:"source"`
+		} `json:"plugins"`
+	}
+	decodeJSON(t, filepath.Join(root, ".agents", "plugins", "marketplace.json"), &marketplace)
+	if marketplace.Name != "sillage" || len(marketplace.Plugins) != 1 {
+		t.Fatalf("unexpected marketplace identity or plugin count")
+	}
+	plugin := marketplace.Plugins[0]
+	if plugin.Name != "sillage-workflow" || plugin.Source.Kind != "local" || plugin.Source.Path != "./plugins/sillage-workflow" {
+		t.Fatalf("marketplace does not point to the Sillage plugin bundle")
+	}
+	if _, err := os.Stat(filepath.Join(root, plugin.Source.Path, ".codex-plugin", "plugin.json")); err != nil {
+		t.Fatalf("marketplace target is not an installable Codex plugin: %v", err)
+	}
+}
+
+func TestCodexAndPortablePluginVersionsMatch(t *testing.T) {
+	t.Parallel()
+
+	root := repositoryRoot(t)
+	var portable, codex struct {
+		Name    string `json:"name"`
+		Version string `json:"version"`
+	}
+	decodeJSON(t, filepath.Join(root, "plugin.json"), &portable)
+	decodeJSON(t, filepath.Join(root, "plugins", "sillage-workflow", ".codex-plugin", "plugin.json"), &codex)
+	if portable.Name != codex.Name || portable.Version != codex.Version {
+		t.Fatalf("plugin manifests disagree: portable=%s@%s codex=%s@%s", portable.Name, portable.Version, codex.Name, codex.Version)
+	}
+}
+
+func decodeJSON(t *testing.T, path string, target any) {
+	t.Helper()
+	file, err := os.Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+	decoder := json.NewDecoder(file)
+	if err := decoder.Decode(target); err != nil {
+		t.Fatalf("decode %s: %v", path, err)
 	}
 }
 

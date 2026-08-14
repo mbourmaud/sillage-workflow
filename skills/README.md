@@ -3,7 +3,7 @@
 Skills are published independently so projects install only the judgment they
 need. The deterministic CLI and schemas remain optional companions.
 
-## Candidate for 0.1
+## Release candidate 0.1.0-rc.1
 
 ### `researching-with-evidence`
 
