@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/mbourmaud/sillage-workflow/schemas/project.schema.json",
+  "title": "Sillage project profile",
+  "type": "object",
+  "required": ["version", "project", "task_store", "authority", "verification"],
+  "properties": {
+    "version": { "const": 1 },
+    "project": {
+      "type": "object",
+      "required": ["name", "product", "design", "agents", "domain"],
+      "properties": {
+        "name": { "$ref": "#/$defs/non_blank" },
+        "product": { "$ref": "#/$defs/non_blank" },
+        "design": { "$ref": "#/$defs/non_blank" },
+        "agents": { "$ref": "#/$defs/non_blank" },
+        "domain": { "$ref": "#/$defs/non_blank" }
+      },
+      "additionalProperties": false
+    },
+    "task_store": {
+      "type": "object",
+      "required": ["provider"],
+      "properties": { "provider": { "$ref": "#/$defs/non_blank" } },
+      "additionalProperties": true
+    },
+    "authority": {
+      "type": "object",
+      "required": ["human_required"],
+      "properties": {
+        "human_required": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/non_blank" }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "object",
+      "required": ["fast", "complete"],
+      "properties": {
+        "fast": { "$ref": "#/$defs/commands" },
+        "complete": { "$ref": "#/$defs/commands" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "non_blank": { "type": "string", "pattern": "\\S" },
+    "commands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "command"],
+        "properties": {
+          "name": { "$ref": "#/$defs/non_blank" },
+          "command": { "$ref": "#/$defs/non_blank" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,30 @@
+{
+  "skill_name": "researching-with-evidence",
+  "status": "human_review_pending",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Find out whether the retry API in the version of the library installed in this repository cancels an in-flight request. I need the answer to decide our adapter contract. Do not add documentation unless the result will constrain future work.",
+      "expected_output": "Inspects the installed version first, distinguishes direct evidence from inference, records findings in the active task, and proposes durable promotion only if warranted.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Read a few tutorials about database migrations and tell me the best approach for this project.",
+      "expected_output": "Uses tutorials for discovery, traces material claims to primary sources and current project behavior, records conflicts and freshness, and does not turn research into an unapproved decision.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Quickly research this unfamiliar API while I keep implementing. Put whatever you find in docs/research so we don't lose it.",
+      "expected_output": "Does not require a background agent, resists automatic repository-note creation, and asks one focused question instead of rendering an empty evidence packet when the API is unspecified.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "We use Orbit Retry. A tutorial says cancelPending cancels the current request, but I am not sure. Research the exact behavior of the installed version from the supplied fixture and give me the conclusion needed for our adapter contract. Identify conflicts and say what, if anything, deserves durable promotion.",
+      "expected_output": "Resolves version 2.4.0 from the lockfile, prioritizes installed implementation and matching official documentation over the conflicting tutorial, concludes that cancelPending does not abort an active request, labels the tutorial conflict, and recommends promoting only the stable adapter invariant rather than raw notes.",
+      "files": ["fixtures/retry-conflict"]
+    }
+  ]
+}
