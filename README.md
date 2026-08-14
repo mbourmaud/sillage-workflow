@@ -15,6 +15,8 @@ Sillage combines:
 - JSON contracts for tasks, slices, projects, and worktrees;
 - a standalone Go CLI for deterministic checks;
 - project profiles that bind the protocol to local tools;
+- provider-neutral execution profiles that match capability and effort to each
+  stage;
 - an OKF-inspired durable knowledge model.
 
 ## Status
@@ -113,6 +115,21 @@ INTAKE → INVESTIGATE → DECIDE → IMPLEMENT → VERIFY → REVIEW → HANDOF
 `BLOCKED` is reachable from every state. Product decisions, scope changes,
 destructive actions, external writes, merges, deployments, and evidence waivers
 remain human decisions.
+
+Tasks may also carry an execution profile such as `standard/medium` for a
+bounded implementation or `advanced/high` for a difficult decision or
+independent review. These profiles do not name a model, grant permissions, or
+change the decision digest; an adapter maps them to the models available in its
+environment and must surface any fallback before affected evidence is trusted.
+
+For bounded work, a task may also request a `parent` or `subagent` delegation
+per stage. The request names a role, isolation (`read_only` or
+`isolated_worktree` for children), and return packet; it never names a model.
+The parent agent remains the orchestrator and human authority. A host such as
+Codex can map the request to a configured child thread; a host without that
+capability continues in the parent when the request is optional, or records a
+`BLOCKED` resume condition when it is required. Child output is reviewed by the
+parent before it becomes evidence or changes lifecycle state.
 
 ## Project entry contract
 

@@ -11,6 +11,7 @@ verification, review, and handoff records. The [architecture](architecture.md)
 page explains the protocol/runtime/adapter boundaries.
 
 - [Architecture](architecture.md)
+- [Codex delegation adapter](adapters/codex.md)
 - [Durable knowledge](knowledge.md)
 - [Release process](release.md)
 - [Roadmap](roadmap.md)

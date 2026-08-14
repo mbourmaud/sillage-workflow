@@ -18,6 +18,8 @@
       },
       "additionalProperties": false
     },
+    "execution": { "$ref": "#/$defs/execution_plan" },
+    "delegation": { "$ref": "#/$defs/delegation_plan" },
     "decisions": {
       "type": "array",
       "items": { "$ref": "#/$defs/decision" }
@@ -79,6 +81,90 @@
   "$defs": {
     "non_blank": { "type": "string", "pattern": "\\S" },
     "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "execution_plan": {
+      "type": "object",
+      "required": ["default"],
+      "properties": {
+        "default": { "$ref": "#/$defs/execution_profile" },
+        "overrides": {
+          "type": "object",
+          "properties": {
+            "INTAKE": { "$ref": "#/$defs/execution_profile" },
+            "INVESTIGATE": { "$ref": "#/$defs/execution_profile" },
+            "DECIDE": { "$ref": "#/$defs/execution_profile" },
+            "IMPLEMENT": { "$ref": "#/$defs/execution_profile" },
+            "VERIFY": { "$ref": "#/$defs/execution_profile" },
+            "REVIEW": { "$ref": "#/$defs/execution_profile" },
+            "HANDOFF": { "$ref": "#/$defs/execution_profile" },
+            "BLOCKED": { "$ref": "#/$defs/execution_profile" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution_profile": {
+      "type": "object",
+      "required": ["capability", "effort"],
+      "properties": {
+        "capability": { "enum": ["light", "standard", "advanced", "frontier"] },
+        "effort": { "enum": ["low", "medium", "high", "max"] }
+      },
+      "additionalProperties": false
+    },
+    "delegation_plan": {
+      "type": "object",
+      "required": ["default"],
+      "properties": {
+        "default": { "$ref": "#/$defs/delegation_request" },
+        "overrides": {
+          "type": "object",
+          "properties": {
+            "INTAKE": { "$ref": "#/$defs/delegation_request" },
+            "INVESTIGATE": { "$ref": "#/$defs/delegation_request" },
+            "DECIDE": { "$ref": "#/$defs/delegation_request" },
+            "IMPLEMENT": { "$ref": "#/$defs/delegation_request" },
+            "VERIFY": { "$ref": "#/$defs/delegation_request" },
+            "REVIEW": { "$ref": "#/$defs/delegation_request" },
+            "HANDOFF": { "$ref": "#/$defs/delegation_request" },
+            "BLOCKED": { "$ref": "#/$defs/delegation_request" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "delegation_request": {
+      "type": "object",
+      "required": ["mode", "role", "isolation", "return"],
+      "properties": {
+        "mode": { "enum": ["parent", "subagent"] },
+        "role": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+        "isolation": { "enum": ["same_context", "read_only", "isolated_worktree"] },
+        "return": { "enum": ["summary", "decision_packet", "implementation_patch", "verification_evidence", "review_findings", "handoff_packet"] },
+        "required": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "parent" } }, "required": ["mode"] },
+          "then": {
+            "properties": {
+              "isolation": { "const": "same_context" },
+              "required": { "const": false }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "mode": { "const": "subagent" } }, "required": ["mode"] },
+          "then": {
+            "properties": {
+              "isolation": { "enum": ["read_only", "isolated_worktree"] }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
     "evidence": {
       "type": "object",
       "required": ["kind", "ref", "observed_at", "result", "decision_digest"],

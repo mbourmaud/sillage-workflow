@@ -51,6 +51,78 @@ Risk / recovery: <material risk and observable recovery condition>
 An accepted decision changes the task decision digest. Re-open the decision
 gate when its answer, scope, or non-goals change.
 
+## Execution profile
+
+The task may carry a provider-neutral reasoning recommendation. It describes
+the capability and effort needed for the work, not a model name or permission
+to bypass a human gate.
+
+```json
+{
+  "execution": {
+    "default": { "capability": "standard", "effort": "medium" },
+    "overrides": {
+      "DECIDE": { "capability": "advanced", "effort": "high" },
+      "REVIEW": { "capability": "advanced", "effort": "high" }
+    }
+  }
+}
+```
+
+Use `light/low` for orientation and handoff, `standard/medium` for bounded
+implementation, `advanced/high` for research, decisions, and independent
+review, and `frontier/max` only for critical or unresolved high-impact work.
+Adapters choose the available provider mapping. A fallback is recorded and
+surfaced before relying on affected evidence; actual usage is recorded only
+when the adapter exposes it. Execution profiles are operational and do not
+change the decision digest.
+
+## Delegation plan
+
+The task may also request a child agent for one stage. This is a host adapter
+request, not a second lifecycle or a model selection:
+
+```json
+{
+  "delegation": {
+    "default": {
+      "mode": "parent",
+      "role": "orchestrator",
+      "isolation": "same_context",
+      "return": "summary"
+    },
+    "overrides": {
+      "DECIDE": {
+        "mode": "subagent",
+        "role": "decision_researcher",
+        "isolation": "read_only",
+        "return": "decision_packet",
+        "required": true
+      },
+      "IMPLEMENT": {
+        "mode": "subagent",
+        "role": "builder",
+        "isolation": "isolated_worktree",
+        "return": "implementation_patch"
+      },
+      "REVIEW": {
+        "mode": "subagent",
+        "role": "reviewer",
+        "isolation": "read_only",
+        "return": "review_findings",
+        "required": true
+      }
+    }
+  }
+}
+```
+
+The parent supplies only the project context, task intent, active slice,
+decision digest, requested isolation, and return shape. The host chooses the
+actual model. Optional requests fall back to the parent with an explicit note;
+required requests block until the host can provide a child. Child output is
+review input, never automatic approval or evidence.
+
 ## Verification
 
 ```markdown

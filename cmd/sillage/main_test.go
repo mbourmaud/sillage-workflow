@@ -343,3 +343,29 @@ func TestStatusPrintsGateWithoutMutatingTask(t *testing.T) {
 		t.Fatal("status must not mutate the task")
 	}
 }
+
+func TestStatusRejectsInvalidDelegationRequest(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	taskPath := filepath.Join(dir, "task.json")
+	task := `{"id":"task-1","title":"Delegation","status":"IMPLEMENT","intent":{"outcome":"ship","scope":["core"],"non_goals":[]},"delegation":{"default":{"mode":"subagent","role":"builder","isolation":"same_context","return":"implementation_patch"}},"acceptance":[{"id":"AC-1","statement":"works","risk":"regression"}],"slices":[{"id":"core","title":"Core","status":"active","acceptance":["AC-1"],"dependencies":[]}]}`
+	if err := os.WriteFile(taskPath, []byte(task), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	var stdout bytes.Buffer
+	if exitCode := run([]string{"status", "--task", taskPath, "--json"}, &stdout, &stdout); exitCode != 1 {
+		t.Fatalf("expected invalid delegation request rejection, got %d: %s", exitCode, stdout.String())
+	}
+	var report struct {
+		Valid      bool   `json:"valid"`
+		NextAction string `json:"next_action"`
+	}
+	if err := json.Unmarshal(stdout.Bytes(), &report); err != nil {
+		t.Fatalf("expected status JSON: %v", err)
+	}
+	if report.Valid || report.NextAction != "repair invalid task contract" {
+		t.Fatalf("expected invalid task report, got %#v", report)
+	}
+}

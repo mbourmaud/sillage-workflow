@@ -113,6 +113,7 @@ func runContext(args []string, stdout io.Writer, stderr io.Writer) int {
 		}
 		if report.Task != nil {
 			fmt.Fprintf(stdout, "task %s: %s\n", report.Task.ID, report.Task.Status)
+			printDelegation(stdout, report.Task.Delegation)
 			if report.Task.NextStatus != "" {
 				fmt.Fprintf(stdout, "next: %s (%s)\n", report.Task.NextStatus, report.Task.NextAction)
 			} else {
@@ -151,6 +152,7 @@ func runStatus(args []string, stdout io.Writer, stderr io.Writer) int {
 		}
 	} else {
 		fmt.Fprintf(stdout, "%s: %s\n", report.Status, report.NextAction)
+		printDelegation(stdout, report.Delegation)
 		if report.NextStatus != "" {
 			fmt.Fprintf(stdout, "next: %s\n", report.NextStatus)
 		}
@@ -319,6 +321,17 @@ func writeTransitionResult(stdout io.Writer, stderr io.Writer, result workflow.T
 		fmt.Fprintln(stdout, result.Code)
 	}
 	return true
+}
+
+func printDelegation(writer io.Writer, request *workflow.DelegationRequest) {
+	if request == nil {
+		return
+	}
+	required := "optional"
+	if request.Required {
+		required = "required"
+	}
+	fmt.Fprintf(writer, "delegation: %s/%s in %s -> %s (%s)\n", request.Mode, request.Role, request.Isolation, request.Return, required)
 }
 
 func printUsage(writer io.Writer) {

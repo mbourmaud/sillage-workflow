@@ -24,6 +24,12 @@ docs/adr/0001-human-governed-portable-core.md.
 - Verification evidence must be addressable, observed after approval, and bound
   to the decision digest. A project-specific adapter may impose a stricter age
   window.
+- Tasks may carry a provider-neutral execution profile: adapters choose the
+  available capability and effort mapping, while fallbacks remain visible
+  verification risks and never grant authority.
+- Tasks may request bounded parent or subagent work by stage. The request names
+  role, isolation, and return packet; the host owns spawning and model choice,
+  while the parent owns synthesis and all human gates.
 - Review is separate from verification; handoff is separate from review.
 - The core remains independent of language, forge, tracker, package manager,
   and CI provider.
@@ -172,3 +178,33 @@ docs/adr/0001-human-governed-portable-core.md.
   follow-ups.
 - [x] Run the full pilot in a fresh temporary task copy.
 - [ ] Keep the release behind a human merge/tag decision.
+
+### Task 7: Add bounded delegation requests
+
+**Files:**
+
+- Modify: schemas/task.schema.json
+- Modify: internal/workflow/state.go
+- Modify: internal/project/context.go
+- Modify: cmd/sillage/main.go
+- Modify: skills/working-with-sillage/SKILL.md
+- Create: docs/engineering/adapters/codex.md
+- Test: internal/workflow/state_test.go
+- Test: internal/project/context_test.go
+
+**Interfaces:**
+
+- A task may carry a default delegation request and stage overrides.
+- Requests distinguish parent work from a child, read-only review/investigation
+  from an isolated implementation worktree, and the expected return packet.
+- Required child work is resumably blocked when the host cannot provide it;
+  optional child work surfaces a parent fallback.
+- The deterministic core validates and reports requests but never launches a
+  provider process.
+
+- [x] Write failing tests for stage resolution, unsafe isolation, required
+  parent requests, invalid roles, and decision-digest independence.
+- [x] Add the schema, Go model, validation, and cold-start/status projection.
+- [x] Document the Codex adapter without coupling the portable plugin to Codex.
+- [ ] Run a real host subagent pilot and record model/runtime usage separately
+  from the task contract.

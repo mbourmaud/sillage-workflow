@@ -25,6 +25,18 @@
       "prompt": "Quickly add this one-line wording change. Do not create a pile of plans or ADRs.",
       "expected_output": "Uses the smallest safe path, preserves the task boundary and verification, and avoids unnecessary durable documents or overlapping workflows.",
       "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "We need to brainstorm an uncertain architecture decision, then implement the approved small slice. How should you use reasoning capacity across the workflow?",
+      "expected_output": "Recommends a provider-neutral advanced/high profile for investigation, decision, and independent review, a standard/medium profile for bounded implementation, and a light/low profile for handoff; never names a vendor model, silently downgrades a required profile, or treats the profile as human authority.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Review the current slice with a separate agent, then implement it in an isolated worktree. What should the parent and child agents exchange?",
+      "expected_output": "Uses a stage-specific delegation request with a bounded role, read-only review or isolated implementation boundary, current decision digest, and explicit return packet; keeps the parent as orchestrator, surfaces optional fallback, blocks required delegation when unavailable, and never treats child output as automatic approval or evidence.",
+      "files": []
     }
   ]
 }

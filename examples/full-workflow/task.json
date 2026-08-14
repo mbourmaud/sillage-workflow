@@ -13,6 +13,62 @@
       "Merge, deploy, or publish externally"
     ]
   },
+  "execution": {
+    "default": {
+      "capability": "standard",
+      "effort": "medium"
+    },
+    "overrides": {
+      "DECIDE": {
+        "capability": "advanced",
+        "effort": "high"
+      },
+      "REVIEW": {
+        "capability": "advanced",
+        "effort": "high"
+      },
+      "HANDOFF": {
+        "capability": "light",
+        "effort": "low"
+      }
+    }
+  },
+  "delegation": {
+    "default": {
+      "mode": "parent",
+      "role": "orchestrator",
+      "isolation": "same_context",
+      "return": "summary"
+    },
+    "overrides": {
+      "DECIDE": {
+        "mode": "subagent",
+        "role": "decision_researcher",
+        "isolation": "read_only",
+        "return": "decision_packet",
+        "required": true
+      },
+      "IMPLEMENT": {
+        "mode": "subagent",
+        "role": "builder",
+        "isolation": "isolated_worktree",
+        "return": "implementation_patch"
+      },
+      "REVIEW": {
+        "mode": "subagent",
+        "role": "reviewer",
+        "isolation": "read_only",
+        "return": "review_findings",
+        "required": true
+      },
+      "HANDOFF": {
+        "mode": "parent",
+        "role": "orchestrator",
+        "isolation": "same_context",
+        "return": "handoff_packet"
+      }
+    }
+  },
   "decisions": [
     {
       "id": "D-1",

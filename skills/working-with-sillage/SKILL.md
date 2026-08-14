@@ -17,6 +17,70 @@ unfamiliar, disputed, version-sensitive, or externally documented facts. Do not
 invent a second lifecycle, install a collection of overlapping workflows, or
 turn every conversation into a document-writing exercise.
 
+## Execution profile
+
+Use the task's optional `execution` plan to request the right reasoning
+capability and effort for each stage without naming a model or provider. The
+portable dimensions are:
+
+- `capability`: `light`, `standard`, `advanced`, or `frontier`;
+- `effort`: `low`, `medium`, `high`, or `max`.
+
+Use these defaults unless the task's risk or uncertainty justifies an explicit
+override:
+
+| Stage | Capability | Effort | Typical use |
+| --- | --- | --- | --- |
+| INTAKE / HANDOFF | light | low | orient, summarize, leave a resume point |
+| INVESTIGATE | standard | medium | inspect a bounded implementation |
+| DECIDE | advanced | high | research, alternatives, architecture, scope |
+| IMPLEMENT | standard | medium | execute one approved slice |
+| VERIFY | standard | medium | interpret deterministic checks after they run |
+| REVIEW | advanced | high | independent assessment and risk review |
+| Critical or high-impact work | frontier | max | security, migrations, or unresolved failure |
+
+An adapter maps these requirements to the models and effort controls available
+in its environment. Never put vendor model names in the task record. If an
+adapter cannot satisfy a requested profile, record the fallback and surface it
+before relying on the affected evidence; do not silently downgrade a critical
+or required review.
+
+The execution plan is an operational recommendation, not human approval and
+not a second lifecycle. It is intentionally excluded from the decision digest
+because the available provider may vary. A material downgrade is nevertheless
+a verification risk and returns the task to the relevant human gate. Actual
+tokens, tool calls, duration, and cost are recorded only when the adapter
+exposes them; never invent usage data.
+
+## Delegation plan
+
+The delegation plan is optional; use it when a stage benefits from a separate
+agent thread. The parent agent remains the orchestrator and owns the task
+record, lifecycle transitions, human questions, and final synthesis. A
+delegated agent receives one bounded role and returns the requested packet:
+
+- `parent` keeps work in the current conversation;
+- `subagent` asks the host runtime for a child thread;
+- `same_context` is only for parent work, `read_only` is for investigation or
+  review, and `isolated_worktree` is for an implementation child;
+- `summary`, `decision_packet`, `implementation_patch`,
+  `verification_evidence`, `review_findings`, and `handoff_packet` describe the
+  expected return shape, not an automatic approval.
+
+The task record never names a model or provider. The host adapter maps the
+stage's execution profile and role to its available agent configuration. Pass
+the project entry points, task intent, active slice, current decision digest,
+requested isolation, and return shape to the child. Do not pass unrelated chat
+history. Prefer one child per bounded stage; do not let a child recursively
+delegate or change a human-owned decision.
+
+If the host cannot spawn a requested child, an optional request falls back to
+the parent and must be surfaced before its output is used as review or
+verification evidence. A `required` request enters `BLOCKED` with the exact
+resume condition instead of silently downgrading. Child output is an input to
+the parent, not evidence or approval until the parent checks it against the
+current digest and the normal gate.
+
 ## Cold start
 
 At the beginning of a material task, identify the repository root and read only
@@ -54,6 +118,12 @@ Missing: <one to three material gaps>
 Decision: <approved boundary, or “awaiting human decision”>
 Next action: <one smallest safe action>
 Evidence needed: <observable proof for the next gate>
+```
+
+Include the selected execution profile in the snapshot when it is material:
+
+```text
+Execution: <capability>/<effort>; fallback: <none or recorded reason>
 ```
 
 If there is no task record, do not silently create a large plan or durable

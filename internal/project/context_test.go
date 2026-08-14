@@ -21,6 +21,22 @@ func TestContextReportsReadyProjectAndNextGate(t *testing.T) {
 		Intent:     workflow.Intent{Outcome: "status is visible", Scope: []string{"cli"}, NonGoals: []string{}},
 		Acceptance: []workflow.AcceptanceCriterion{{ID: "AC-1", Statement: "status is visible", Risk: "hidden state"}},
 		Slices:     []workflow.Slice{{ID: "slice-1", Title: "Status view", Status: "active", Acceptance: []string{"AC-1"}, Dependencies: []string{}}},
+		Execution: &workflow.ExecutionPlan{
+			Default: workflow.ExecutionProfile{Capability: "light", Effort: "low"},
+			Overrides: map[workflow.Status]workflow.ExecutionProfile{
+				workflow.StatusImplement: {Capability: "standard", Effort: "medium"},
+			},
+		},
+		Delegation: &workflow.DelegationPlan{
+			Default: workflow.DelegationRequest{
+				Mode: "parent", Role: "orchestrator", Isolation: "same_context", Return: "summary",
+			},
+			Overrides: map[workflow.Status]workflow.DelegationRequest{
+				workflow.StatusImplement: {
+					Mode: "subagent", Role: "builder", Isolation: "isolated_worktree", Return: "implementation_patch",
+				},
+			},
+		},
 	}
 
 	report := Context(dir, &task)
@@ -32,6 +48,12 @@ func TestContextReportsReadyProjectAndNextGate(t *testing.T) {
 	}
 	if len(report.Task.ActiveSlices) != 1 || report.Task.ActiveSlices[0] != "slice-1: Status view" {
 		t.Fatalf("expected active slice summary, got %#v", report.Task.ActiveSlices)
+	}
+	if report.Task.Execution == nil || report.Task.Execution.Capability != "standard" || report.Task.Execution.Effort != "medium" {
+		t.Fatalf("expected current execution profile, got %#v", report.Task.Execution)
+	}
+	if report.Task.Delegation == nil || report.Task.Delegation.Mode != "subagent" || report.Task.Delegation.Isolation != "isolated_worktree" {
+		t.Fatalf("expected current delegation request, got %#v", report.Task.Delegation)
 	}
 }
 

@@ -226,6 +226,131 @@ func TestTaskContractRejectsUnknownStatus(t *testing.T) {
 	}
 }
 
+func TestTaskContractAcceptsProviderNeutralExecutionPlan(t *testing.T) {
+	t.Parallel()
+
+	task := validTask()
+	task.Execution = &ExecutionPlan{
+		Default: ExecutionProfile{Capability: "standard", Effort: "medium"},
+		Overrides: map[Status]ExecutionProfile{
+			StatusDecide:    {Capability: "advanced", Effort: "high"},
+			StatusImplement: {Capability: "standard", Effort: "medium"},
+			StatusReview:    {Capability: "advanced", Effort: "high"},
+		},
+	}
+	task.Intent.NonGoals = []string{}
+	task.Slices[0].Dependencies = []string{}
+
+	if result := ValidateTask(task); !result.OK {
+		t.Fatalf("expected provider-neutral execution plan to satisfy the task contract, got %#v", result)
+	}
+}
+
+func TestTaskContractRejectsInvalidExecutionProfile(t *testing.T) {
+	t.Parallel()
+
+	invalid := []ExecutionPlan{
+		{Default: ExecutionProfile{Capability: "vendor-model", Effort: "medium"}},
+		{Default: ExecutionProfile{Capability: "standard", Effort: "unbounded"}},
+		{Default: ExecutionProfile{Capability: "standard", Effort: "medium"}, Overrides: map[Status]ExecutionProfile{
+			Status("MAGIC"): {Capability: "standard", Effort: "medium"},
+		}},
+	}
+	for index, plan := range invalid {
+		task := validTask()
+		task.Execution = &plan
+		if result := ValidateTask(task); result.OK {
+			t.Errorf("invalid execution plan %d was accepted", index)
+		}
+	}
+}
+
+func TestTaskContractAcceptsDelegationPlanAndResolvesStageOverride(t *testing.T) {
+	t.Parallel()
+
+	task := validTask()
+	task.Intent.NonGoals = []string{}
+	task.Slices[0].Dependencies = []string{}
+	task.Delegation = &DelegationPlan{
+		Default: DelegationRequest{
+			Mode:      "parent",
+			Role:      "orchestrator",
+			Isolation: "same_context",
+			Return:    "summary",
+		},
+		Overrides: map[Status]DelegationRequest{
+			StatusDecide: {
+				Mode:      "subagent",
+				Role:      "decision_researcher",
+				Isolation: "read_only",
+				Return:    "decision_packet",
+				Required:  true,
+			},
+		},
+	}
+
+	if result := ValidateTask(task); !result.OK {
+		t.Fatalf("expected delegation plan to satisfy the task contract, got %#v", result)
+	}
+	request, ok := task.DelegationFor(StatusDecide)
+	if !ok || request.Mode != "subagent" || !request.Required {
+		t.Fatalf("expected DECIDE override, got %#v (ok=%v)", request, ok)
+	}
+	request, ok = task.DelegationFor(StatusImplement)
+	if !ok || request.Mode != "parent" {
+		t.Fatalf("expected default parent delegation, got %#v (ok=%v)", request, ok)
+	}
+}
+
+func TestTaskContractRejectsUnsafeDelegationRequests(t *testing.T) {
+	t.Parallel()
+
+	invalid := []DelegationPlan{
+		{Default: DelegationRequest{Mode: "subagent", Role: "builder", Isolation: "same_context", Return: "summary"}},
+		{Default: DelegationRequest{Mode: "parent", Role: "orchestrator", Isolation: "same_context", Return: "summary", Required: true}},
+		{Default: DelegationRequest{Mode: "subagent", Role: "builder", Isolation: "isolated_worktree", Return: "unknown"}},
+		{Default: DelegationRequest{Mode: "subagent", Role: "bad role", Isolation: "read_only", Return: "summary"}},
+		{Default: DelegationRequest{Mode: "parent", Role: "orchestrator", Isolation: "same_context", Return: "summary"}, Overrides: map[Status]DelegationRequest{
+			Status("MAGIC"): {Mode: "parent", Role: "orchestrator", Isolation: "same_context", Return: "summary"},
+		}},
+	}
+	for index, plan := range invalid {
+		task := validTask()
+		task.Intent.NonGoals = []string{}
+		task.Slices[0].Dependencies = []string{}
+		task.Delegation = &plan
+		if result := ValidateTask(task); result.OK {
+			t.Errorf("invalid delegation plan %d was accepted", index)
+		}
+	}
+}
+
+func TestDecisionDigestIgnoresDelegationPlan(t *testing.T) {
+	t.Parallel()
+
+	task := validTask()
+	digest := DecisionDigest(task)
+	task.Delegation = &DelegationPlan{Default: DelegationRequest{
+		Mode: "subagent", Role: "researcher", Isolation: "read_only", Return: "summary",
+	}}
+	if DecisionDigest(task) != digest {
+		t.Fatal("delegation plan changes must not invalidate the product decision digest")
+	}
+}
+
+func TestDecisionDigestIgnoresExecutionPlan(t *testing.T) {
+	t.Parallel()
+
+	task := validTask()
+	digest := DecisionDigest(task)
+	task.Execution = &ExecutionPlan{
+		Default: ExecutionProfile{Capability: "frontier", Effort: "max"},
+	}
+	if DecisionDigest(task) != digest {
+		t.Fatal("execution profile changes must not invalidate the product decision digest")
+	}
+}
+
 func validTask() Task {
 	return Task{
 		ID:     "task-1",
