@@ -1,6 +1,6 @@
 {
   "name": "sillage-workflow",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A human-governed, resumable engineering workflow for coding agents.",
   "author": { "name": "Mathieu Bourmaud" },
   "skills": "./skills/",
@@ -13,7 +13,8 @@
     "capabilities": [
       "Guide bounded, resumable engineering work",
       "Research with source authority and explicit evidence",
-      "Recommend provider-neutral reasoning capability and effort per stage"
+      "Recommend provider-neutral reasoning capability and effort per stage",
+      "Route bounded work to a parent or subagent with explicit isolation"
     ],
     "defaultPrompt": "Use Sillage to keep this task bounded, human-governed, traceable, and evidence-backed."
   }

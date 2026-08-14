@@ -21,11 +21,12 @@ Sillage combines:
 
 ## Status
 
-Sillage is pre-1.0. Version 0.1.0 establishes the public protocol, cold-start
-contract, lifecycle validator, and first skill evaluation fixtures. Interfaces
-may evolve as the workflow is exercised on real projects.
+Sillage is pre-1.0. Version 0.2.0 adds the full workflow kernel, provider-neutral
+execution profiles, and bounded delegation requests while preserving the
+human-governed protocol. Interfaces may evolve as the workflow is exercised on
+real projects.
 
-## Install Sillage 0.1.0
+## Install Sillage 0.2.0
 
 The release ships one canonical Agent Skill through several thin
 distribution adapters. None of these commands installs the optional Go CLI.
@@ -154,8 +155,8 @@ The CLI has no runtime dependency beyond its compiled binary.
 go run ./cmd/sillage doctor --root /path/to/project
 go run ./cmd/sillage context --root /path/to/project --task task.json --json
 go run ./cmd/sillage status --task task.json --json
-go run ./cmd/sillage changelog check --version v0.1.0
-go run ./cmd/sillage changelog extract --version v0.1.0
+go run ./cmd/sillage changelog check --version v0.2.0
+go run ./cmd/sillage changelog extract --version v0.2.0
 go run ./cmd/sillage digest --task task.json
 go run ./cmd/sillage transition --task task.json --to IMPLEMENT
 go run ./cmd/sillage transition --task task.json --to IMPLEMENT --write

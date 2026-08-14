@@ -6,6 +6,8 @@ All notable changes to Sillage are documented here. This project follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-14
+
 ### Added
 
 - Full workflow kernel with decision-bound review and handoff artifacts.
@@ -20,6 +22,8 @@ All notable changes to Sillage are documented here. This project follows
   effort to each workflow stage without naming a model.
 - Provider-neutral delegation requests for bounded parent or subagent work,
   with explicit isolation and return packets.
+- Codex adapter profiles for decision research, isolated implementation, and
+  read-only review.
 
 ### Changed
 
@@ -37,5 +41,6 @@ All notable changes to Sillage are documented here. This project follows
 - `researching-with-evidence` Agent Skill with evaluation prompts and a real
   installation pilot.
 
-[unreleased]: https://github.com/mbourmaud/sillage-workflow/compare/v0.1.0...HEAD
+[unreleased]: https://github.com/mbourmaud/sillage-workflow/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/mbourmaud/sillage-workflow/releases/tag/v0.2.0
 [0.1.0]: https://github.com/mbourmaud/sillage-workflow/releases/tag/v0.1.0

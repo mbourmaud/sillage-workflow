@@ -40,9 +40,9 @@ cannot publish without a corresponding documented release.
 
 ```sh
 make changelog-check
-make release-notes VERSION=v0.1.0
-go run ./cmd/sillage changelog check --version v0.1.0
-go run ./cmd/sillage changelog extract --version v0.1.0
+make release-notes VERSION=v0.2.0
+go run ./cmd/sillage changelog check --version v0.2.0
+go run ./cmd/sillage changelog extract --version v0.2.0
 ```
 
 The changelog commands are read-only. They do not create tags, releases, or
