@@ -1,0 +1,84 @@
+{
+  "id": "full-workflow-001",
+  "title": "Expose a resumable workflow status",
+  "status": "REVIEW",
+  "intent": {
+    "outcome": "A fresh agent can see the current task gate and the next safe action without replaying chat history.",
+    "scope": [
+      "Add deterministic context and status views",
+      "Allow an explicitly requested local transition write"
+    ],
+    "non_goals": [
+      "Choose product scope without a human",
+      "Merge, deploy, or publish externally"
+    ]
+  },
+  "decisions": [
+    {
+      "id": "D-1",
+      "question": "Should lifecycle validation remain read-only by default?",
+      "answer": "Yes. A transition write requires an explicit --write flag and a local task record.",
+      "status": "accepted",
+      "by": "human:maintainer",
+      "at": "2026-08-14T13:30:00Z"
+    }
+  ],
+  "approval": {
+    "by": "human:maintainer",
+    "at": "2026-08-14T13:35:00Z",
+    "decision_digest": "aef92dfe13a6d5ea418d1b6ce2604ca313c41cd60902b5fb191be71958cb2d65"
+  },
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "statement": "The context view reports the active task and its next legal gate without changing the task record.",
+      "risk": "A misleading cold-start view can send a fresh agent into the wrong work or gate.",
+      "evidence": [
+        {
+          "kind": "test",
+          "ref": "go-test:TestContextPrintsColdStartJSON",
+          "observed_at": "2026-08-14T14:00:00Z",
+          "result": "passed",
+          "decision_digest": "aef92dfe13a6d5ea418d1b6ce2604ca313c41cd60902b5fb191be71958cb2d65"
+        }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "statement": "An explicit transition write changes only the task status and preserves a private local record.",
+      "risk": "An implicit or unsafe write could overwrite concurrent work or expose task contents.",
+      "evidence": [
+        {
+          "kind": "test",
+          "ref": "go-test:TestTransitionWriteRequiresExplicitFlagAndPersistsNewStatus",
+          "observed_at": "2026-08-14T14:00:00Z",
+          "result": "passed",
+          "decision_digest": "aef92dfe13a6d5ea418d1b6ce2604ca313c41cd60902b5fb191be71958cb2d65"
+        }
+      ]
+    }
+  ],
+  "slices": [
+    {
+      "id": "workflow-kernel",
+      "title": "Cold-start views and explicit local transition writes",
+      "status": "complete",
+      "acceptance": ["AC-1", "AC-2"],
+      "dependencies": []
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "by": "reviewer:maintainer",
+    "at": "2026-08-14T14:05:00Z",
+    "summary": "The implementation stays within the approved slice; validation remains deterministic and writes are explicit.",
+    "findings": [],
+    "decision_digest": "aef92dfe13a6d5ea418d1b6ce2604ca313c41cd60902b5fb191be71958cb2d65"
+  },
+  "handoff": {
+    "outcome": "The workflow kernel is ready for a human-controlled handoff after the final gate.",
+    "next_action": "Review the pilot output, then decide whether to merge and release the workflow slice.",
+    "at": "2026-08-14T14:05:00Z",
+    "decision_digest": "aef92dfe13a6d5ea418d1b6ce2604ca313c41cd60902b5fb191be71958cb2d65"
+  }
+}

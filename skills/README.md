@@ -15,6 +15,18 @@ promotes durable knowledge sparingly.
 npx skills add mbourmaud/sillage-workflow --skill researching-with-evidence
 ```
 
+### `working-with-sillage` (workflow candidate)
+
+The orchestration skill for cold starts, bounded slices, human decision gates,
+deterministic verification, independent review, resumable blocking, and
+handoff. It routes external research to `researching-with-evidence` instead of
+creating a competing lifecycle. Its evaluation prompts are still draft until
+the full workflow has been exercised on a real project.
+
+```sh
+npx skills add mbourmaud/sillage-workflow --skill working-with-sillage
+```
+
 Behavioral evaluation fixtures live under `evals/`. The first skill was
 released after baseline comparison, a real Codex installation pilot, and human
 review; the roadmap is not an inventory of future skills.

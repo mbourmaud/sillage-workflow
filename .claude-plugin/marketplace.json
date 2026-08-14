@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "sillage",
   "version": "0.1.0",
-  "description": "Human-governed engineering workflow skills.",
+  "description": "Human-governed, resumable engineering workflow skills.",
   "owner": {
     "name": "Mathieu Bourmaud"
   },

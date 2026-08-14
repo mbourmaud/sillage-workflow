@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/mbourmaud/sillage-workflow/internal/project"
+	"github.com/mbourmaud/sillage-workflow/internal/taskstore"
 	"github.com/mbourmaud/sillage-workflow/internal/workflow"
 )
 
@@ -27,6 +28,10 @@ func run(args []string, stdout io.Writer, stderr io.Writer) int {
 	switch args[0] {
 	case "doctor":
 		return runDoctor(args[1:], stdout, stderr)
+	case "context":
+		return runContext(args[1:], stdout, stderr)
+	case "status":
+		return runStatus(args[1:], stdout, stderr)
 	case "digest":
 		return runDigest(args[1:], stdout, stderr)
 	case "transition":
@@ -69,11 +74,96 @@ func runDoctor(args []string, stdout io.Writer, stderr io.Writer) int {
 	return 0
 }
 
+func runContext(args []string, stdout io.Writer, stderr io.Writer) int {
+	flags := flag.NewFlagSet("context", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	root := flags.String("root", ".", "project root")
+	taskPath := flags.String("task", "", "optional task JSON path")
+	jsonOutput := flags.Bool("json", false, "print JSON")
+	if err := flags.Parse(args); err != nil {
+		return 2
+	}
+
+	var task *workflow.Task
+	if *taskPath != "" {
+		loaded, err := readTask(*taskPath)
+		if err != nil {
+			fmt.Fprintln(stderr, err)
+			return 2
+		}
+		task = &loaded
+	}
+	report := project.Context(*root, task)
+	if *jsonOutput {
+		if err := json.NewEncoder(stdout).Encode(report); err != nil {
+			fmt.Fprintln(stderr, err)
+			return 2
+		}
+	} else {
+		if report.Project.Ready {
+			fmt.Fprintln(stdout, "project: ready")
+		} else {
+			fmt.Fprintln(stdout, "project: needs attention")
+			for _, finding := range report.Project.Findings {
+				fmt.Fprintf(stdout, "%s: %s\n", finding.Code, finding.Path)
+			}
+		}
+		if report.Task != nil {
+			fmt.Fprintf(stdout, "task %s: %s\n", report.Task.ID, report.Task.Status)
+			if report.Task.NextStatus != "" {
+				fmt.Fprintf(stdout, "next: %s (%s)\n", report.Task.NextStatus, report.Task.NextAction)
+			} else {
+				fmt.Fprintf(stdout, "next: %s\n", report.Task.NextAction)
+			}
+		}
+	}
+	if !report.Project.Ready || (report.Task != nil && !report.Task.Valid) {
+		return 1
+	}
+	return 0
+}
+
+func runStatus(args []string, stdout io.Writer, stderr io.Writer) int {
+	flags := flag.NewFlagSet("status", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	taskPath := flags.String("task", "", "task JSON path")
+	jsonOutput := flags.Bool("json", false, "print JSON")
+	if err := flags.Parse(args); err != nil {
+		return 2
+	}
+	if *taskPath == "" {
+		fmt.Fprintln(stderr, "status requires --task")
+		return 2
+	}
+	task, err := readTask(*taskPath)
+	if err != nil {
+		fmt.Fprintln(stderr, err)
+		return 2
+	}
+	report := project.TaskStatus(task)
+	if *jsonOutput {
+		if err := json.NewEncoder(stdout).Encode(report); err != nil {
+			fmt.Fprintln(stderr, err)
+			return 2
+		}
+	} else {
+		fmt.Fprintf(stdout, "%s: %s\n", report.Status, report.NextAction)
+		if report.NextStatus != "" {
+			fmt.Fprintf(stdout, "next: %s\n", report.NextStatus)
+		}
+	}
+	if !report.Valid {
+		return 1
+	}
+	return 0
+}
+
 func runTransition(args []string, stdout io.Writer, stderr io.Writer) int {
 	flags := flag.NewFlagSet("transition", flag.ContinueOnError)
 	flags.SetOutput(stderr)
 	taskPath := flags.String("task", "", "task JSON path")
 	target := flags.String("to", "", "target status")
+	write := flags.Bool("write", false, "write the accepted transition atomically")
 	jsonOutput := flags.Bool("json", false, "print JSON")
 	if err := flags.Parse(args); err != nil {
 		return 2
@@ -83,7 +173,7 @@ func runTransition(args []string, stdout io.Writer, stderr io.Writer) int {
 		return 2
 	}
 
-	task, err := readTask(*taskPath)
+	task, original, err := readTaskFile(*taskPath)
 	if err != nil {
 		fmt.Fprintln(stderr, err)
 		return 2
@@ -94,11 +184,21 @@ func runTransition(args []string, stdout io.Writer, stderr io.Writer) int {
 		return 1
 	}
 	result := workflow.ValidateTransition(task, workflow.Status(*target))
+	if !result.OK {
+		if !writeTransitionResult(stdout, stderr, result, *jsonOutput) {
+			return 2
+		}
+		return 1
+	}
+	if *write {
+		if err := taskstore.WriteTransition(*taskPath, task, workflow.Status(*target), original); err != nil {
+			writeTransitionResult(stdout, stderr, workflow.TransitionResult{Code: "write_failed"}, *jsonOutput)
+			fmt.Fprintln(stderr, err)
+			return 1
+		}
+	}
 	if !writeTransitionResult(stdout, stderr, result, *jsonOutput) {
 		return 2
-	}
-	if !result.OK {
-		return 1
 	}
 	return 0
 }
@@ -139,20 +239,25 @@ func runDigest(args []string, stdout io.Writer, stderr io.Writer) int {
 }
 
 func readTask(path string) (workflow.Task, error) {
+	task, _, err := readTaskFile(path)
+	return task, err
+}
+
+func readTaskFile(path string) (workflow.Task, []byte, error) {
 	content, err := os.ReadFile(path)
 	if err != nil {
-		return workflow.Task{}, err
+		return workflow.Task{}, nil, err
 	}
 	var task workflow.Task
 	decoder := json.NewDecoder(bytes.NewReader(content))
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(&task); err != nil {
-		return workflow.Task{}, err
+		return workflow.Task{}, nil, err
 	}
 	if err := decoder.Decode(&struct{}{}); err != io.EOF {
-		return workflow.Task{}, fmt.Errorf("task must contain exactly one JSON object")
+		return workflow.Task{}, nil, fmt.Errorf("task must contain exactly one JSON object")
 	}
-	return task, nil
+	return task, content, nil
 }
 
 func writeTransitionResult(stdout io.Writer, stderr io.Writer, result workflow.TransitionResult, jsonOutput bool) bool {
@@ -168,5 +273,5 @@ func writeTransitionResult(stdout io.Writer, stderr io.Writer, result workflow.T
 }
 
 func printUsage(writer io.Writer) {
-	fmt.Fprintln(writer, "usage: sillage <doctor|digest|transition|version>")
+	fmt.Fprintln(writer, "usage: sillage <doctor|context|status|digest|transition|version>")
 }

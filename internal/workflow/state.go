@@ -57,16 +57,54 @@ type Approval struct {
 	DecisionDigest string `json:"decision_digest"`
 }
 
+// Decision records a human decision that bounds the task.
+type Decision struct {
+	ID       string `json:"id"`
+	Question string `json:"question"`
+	Answer   string `json:"answer"`
+	Status   string `json:"status"`
+	By       string `json:"by"`
+	At       string `json:"at"`
+}
+
+// ReviewFinding records one issue found during independent review.
+type ReviewFinding struct {
+	Severity string `json:"severity"`
+	Ref      string `json:"ref"`
+	Detail   string `json:"detail"`
+}
+
+// Review records an independent assessment of verified work.
+type Review struct {
+	Status         string          `json:"status"`
+	By             string          `json:"by"`
+	At             string          `json:"at"`
+	Summary        string          `json:"summary"`
+	Findings       []ReviewFinding `json:"findings,omitempty"`
+	DecisionDigest string          `json:"decision_digest"`
+}
+
+// Handoff records the outcome and next safe action for a fresh agent.
+type Handoff struct {
+	Outcome        string `json:"outcome"`
+	NextAction     string `json:"next_action"`
+	At             string `json:"at"`
+	DecisionDigest string `json:"decision_digest"`
+}
+
 // Task contains the portable state needed to validate lifecycle transitions.
 type Task struct {
 	ID         string                `json:"id"`
 	Title      string                `json:"title"`
 	Status     Status                `json:"status"`
 	Intent     Intent                `json:"intent"`
+	Decisions  []Decision            `json:"decisions,omitempty"`
 	Acceptance []AcceptanceCriterion `json:"acceptance"`
 	Slices     []Slice               `json:"slices"`
 	Approval   *Approval             `json:"approval,omitempty"`
 	Blocked    *Blocker              `json:"blocked,omitempty"`
+	Review     *Review               `json:"review,omitempty"`
+	Handoff    *Handoff              `json:"handoff,omitempty"`
 }
 
 // Intent bounds the approved outcome and exclusions of a task.
@@ -142,6 +180,17 @@ func ValidateTransition(task Task, target Status) TransitionResult {
 			}
 		}
 	}
+	if task.Status == StatusReview && target == StatusHandoff {
+		if !hasAcceptedReview(task) {
+			if hasBlockingReviewFinding(task.Review) {
+				return TransitionResult{Code: "review_blocking_findings"}
+			}
+			return TransitionResult{Code: "review_required"}
+		}
+		if !hasCurrentHandoff(task) {
+			return TransitionResult{Code: "handoff_required"}
+		}
+	}
 	return TransitionResult{OK: true, Code: "accepted"}
 }
 
@@ -155,6 +204,11 @@ func ValidateTask(task Task) TransitionResult {
 	}
 	if len(task.Acceptance) == 0 || len(task.Slices) == 0 {
 		return TransitionResult{Code: "invalid_task_contract"}
+	}
+	for _, decision := range task.Decisions {
+		if !validDecisionShape(decision) {
+			return TransitionResult{Code: "invalid_task_contract"}
+		}
 	}
 	for _, criterion := range task.Acceptance {
 		if blank(criterion.ID) || blank(criterion.Statement) || blank(criterion.Risk) {
@@ -180,6 +234,12 @@ func ValidateTask(task Task) TransitionResult {
 	if task.Blocked != nil && (!validResumeStatus(task.Blocked.From) || blank(task.Blocked.ResumeCondition)) {
 		return TransitionResult{Code: "invalid_task_contract"}
 	}
+	if task.Review != nil && !validReviewShape(task.Review) {
+		return TransitionResult{Code: "invalid_task_contract"}
+	}
+	if task.Handoff != nil && !validHandoffShape(task.Handoff) {
+		return TransitionResult{Code: "invalid_task_contract"}
+	}
 	if task.Status == StatusBlocked && task.Blocked == nil {
 		return TransitionResult{Code: "invalid_task_contract"}
 	}
@@ -199,11 +259,23 @@ func DecisionDigest(task Task) string {
 		Acceptance   []string `json:"acceptance"`
 		Dependencies []string `json:"dependencies"`
 	}
+	type decision struct {
+		ID       string `json:"id"`
+		Question string `json:"question"`
+		Answer   string `json:"answer"`
+		Status   string `json:"status"`
+		By       string `json:"by"`
+		At       string `json:"at"`
+	}
 	payload := struct {
 		Intent     Intent      `json:"intent"`
+		Decisions  []decision  `json:"decisions,omitempty"`
 		Acceptance []criterion `json:"acceptance"`
 		Slices     []slice     `json:"slices"`
 	}{Intent: task.Intent}
+	for _, item := range task.Decisions {
+		payload.Decisions = append(payload.Decisions, decision{item.ID, item.Question, item.Answer, item.Status, item.By, item.At})
+	}
 	for _, item := range task.Acceptance {
 		payload.Acceptance = append(payload.Acceptance, criterion{item.ID, item.Statement, item.Risk})
 	}
@@ -272,6 +344,59 @@ func validWaiverShape(waiver *Waiver) bool {
 
 func validHumanActor(actor string) bool {
 	return strings.HasPrefix(actor, "human:") && !blank(strings.TrimPrefix(actor, "human:"))
+}
+
+func validDecisionShape(decision Decision) bool {
+	return !blank(decision.ID) && !blank(decision.Question) && !blank(decision.Answer) &&
+		(decision.Status == "accepted" || decision.Status == "rejected") &&
+		validHumanActor(decision.By) && validPastInstant(decision.At)
+}
+
+func validReviewShape(review *Review) bool {
+	if review == nil || (review.Status != "accepted" && review.Status != "changes_requested") ||
+		!validReviewer(review.By) || !validPastInstant(review.At) || blank(review.Summary) ||
+		!validDigest(review.DecisionDigest) {
+		return false
+	}
+	for _, finding := range review.Findings {
+		if (finding.Severity != "blocking" && finding.Severity != "non_blocking") ||
+			blank(finding.Ref) || blank(finding.Detail) {
+			return false
+		}
+	}
+	return true
+}
+
+func validHandoffShape(handoff *Handoff) bool {
+	return handoff != nil && !blank(handoff.Outcome) && !blank(handoff.NextAction) &&
+		validPastInstant(handoff.At) && validDigest(handoff.DecisionDigest)
+}
+
+func validReviewer(reviewer string) bool {
+	return (strings.HasPrefix(reviewer, "reviewer:") || strings.HasPrefix(reviewer, "human:")) &&
+		!blank(strings.TrimPrefix(strings.TrimPrefix(reviewer, "reviewer:"), "human:"))
+}
+
+func hasBlockingReviewFinding(review *Review) bool {
+	if review == nil {
+		return false
+	}
+	for _, finding := range review.Findings {
+		if finding.Severity == "blocking" {
+			return true
+		}
+	}
+	return false
+}
+
+func hasAcceptedReview(task Task) bool {
+	return task.Review != nil && task.Review.Status == "accepted" &&
+		validReviewShape(task.Review) && task.Review.DecisionDigest == DecisionDigest(task) &&
+		!hasBlockingReviewFinding(task.Review)
+}
+
+func hasCurrentHandoff(task Task) bool {
+	return validHandoffShape(task.Handoff) && task.Handoff.DecisionDigest == DecisionDigest(task)
 }
 
 func blank(value string) bool {

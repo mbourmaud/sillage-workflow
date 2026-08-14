@@ -14,6 +14,16 @@ owners: [maintainers]
 - Public task and project schemas.
 - First research-skill candidate with evaluation fixtures.
 
+## Full workflow kernel (in progress)
+
+- Deterministic cold-start and task-status views.
+- Explicit, atomic local transition writes with optimistic concurrency checks.
+- Decision-bound review and handoff artifacts.
+- One orchestration skill that routes research and preserves human gates.
+- An executable end-to-end pilot without merge, deployment, or external writes.
+
+The kernel is exercised on this branch before it is promoted to a release.
+
 ## Next capabilities
 
 Each capability is developed and evaluated independently:

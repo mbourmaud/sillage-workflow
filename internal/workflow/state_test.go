@@ -287,3 +287,119 @@ func TestEnteringBlockedAcceptsRecordedOriginAndResumeCondition(t *testing.T) {
 		t.Fatalf("expected complete blocker record to pass, got %#v", result)
 	}
 }
+
+func TestDecisionDigestChangesWhenAcceptedDecisionChanges(t *testing.T) {
+	t.Parallel()
+
+	task := validTask()
+	task.Decisions = []Decision{{ID: "decision-1", Question: "Default cadence?", Answer: "Weekly", Status: "accepted", By: "human:owner", At: "2026-08-14T00:00:00Z"}}
+	digest := DecisionDigest(task)
+	task.Decisions[0].Answer = "Daily"
+	if DecisionDigest(task) == digest {
+		t.Fatal("decision content must invalidate the approval digest")
+	}
+}
+
+func TestTransitionRequiresAcceptedReviewBeforeHandoff(t *testing.T) {
+	t.Parallel()
+
+	task := reviewReadyTask()
+	result := ValidateTransition(task, StatusHandoff)
+	if result.OK || result.Code != "review_required" {
+		t.Fatalf("expected review_required, got %#v", result)
+	}
+}
+
+func TestTransitionRejectsBlockingReviewFindingBeforeHandoff(t *testing.T) {
+	t.Parallel()
+
+	task := reviewReadyTask()
+	task.Review = &Review{
+		Status:         "changes_requested",
+		By:             "reviewer:agent",
+		At:             "2026-08-14T00:00:00Z",
+		Summary:        "One issue remains.",
+		Findings:       []ReviewFinding{{Severity: "blocking", Ref: "AC-1", Detail: "Missing runtime evidence."}},
+		DecisionDigest: DecisionDigest(task),
+	}
+	result := ValidateTransition(task, StatusHandoff)
+	if result.OK || result.Code != "review_blocking_findings" {
+		t.Fatalf("expected review_blocking_findings, got %#v", result)
+	}
+}
+
+func TestTransitionRequiresCurrentHandoffBeforeCompletion(t *testing.T) {
+	t.Parallel()
+
+	task := reviewReadyTask()
+	task.Review = &Review{
+		Status:         "accepted",
+		By:             "reviewer:agent",
+		At:             "2026-08-14T00:00:00Z",
+		Summary:        "Review accepted.",
+		DecisionDigest: DecisionDigest(task),
+	}
+	result := ValidateTransition(task, StatusHandoff)
+	if result.OK || result.Code != "handoff_required" {
+		t.Fatalf("expected handoff_required, got %#v", result)
+	}
+}
+
+func TestTransitionAcceptsAcceptedReviewAndBoundHandoff(t *testing.T) {
+	t.Parallel()
+
+	task := reviewReadyTask()
+	digest := DecisionDigest(task)
+	task.Review = &Review{
+		Status:         "accepted",
+		By:             "reviewer:agent",
+		At:             "2026-08-14T00:00:00Z",
+		Summary:        "Review accepted.",
+		DecisionDigest: digest,
+	}
+	task.Handoff = &Handoff{
+		Outcome:        "Implemented and verified.",
+		NextAction:     "Merge after human approval.",
+		At:             "2026-08-14T00:00:00Z",
+		DecisionDigest: digest,
+	}
+	result := ValidateTransition(task, StatusHandoff)
+	if !result.OK {
+		t.Fatalf("expected accepted handoff, got %#v", result)
+	}
+}
+
+func TestTransitionRejectsHandoffBoundToEarlierDecision(t *testing.T) {
+	t.Parallel()
+
+	task := reviewReadyTask()
+	digest := DecisionDigest(task)
+	task.Review = &Review{
+		Status:         "accepted",
+		By:             "reviewer:agent",
+		At:             "2026-08-14T00:00:00Z",
+		Summary:        "Review accepted.",
+		DecisionDigest: digest,
+	}
+	task.Handoff = &Handoff{
+		Outcome:        "Implemented and verified.",
+		NextAction:     "Merge after human approval.",
+		At:             "2026-08-14T00:00:00Z",
+		DecisionDigest: "old",
+	}
+	result := ValidateTransition(task, StatusHandoff)
+	if result.OK || result.Code != "handoff_required" {
+		t.Fatalf("expected stale handoff rejection, got %#v", result)
+	}
+}
+
+func reviewReadyTask() Task {
+	task := validTask()
+	task.Status = StatusReview
+	digest := DecisionDigest(task)
+	task.Approval = &Approval{By: "human:owner", At: "2026-08-14T00:00:00Z", DecisionDigest: digest}
+	task.Acceptance[0].Evidence = []Evidence{{
+		Kind: "test", Ref: "run:1", ObservedAt: "2026-08-14T00:00:00Z", Result: "passed", DecisionDigest: digest,
+	}}
+	return task
+}

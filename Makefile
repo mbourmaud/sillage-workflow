@@ -4,7 +4,7 @@ test:
 	go test ./...
 
 test-race:
-	go test -race ./cmd/... ./internal/project ./internal/workflow
+	go test -race ./cmd/... ./internal/project ./internal/taskstore ./internal/workflow
 
 format:
 	@test -z "$$(gofmt -l .)" || { gofmt -l .; exit 1; }

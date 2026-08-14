@@ -104,13 +104,20 @@ The CLI has no runtime dependency beyond its compiled binary.
 
 ```sh
 go run ./cmd/sillage doctor --root /path/to/project
+go run ./cmd/sillage context --root /path/to/project --task task.json --json
+go run ./cmd/sillage status --task task.json --json
 go run ./cmd/sillage digest --task task.json
 go run ./cmd/sillage transition --task task.json --to IMPLEMENT
+go run ./cmd/sillage transition --task task.json --to IMPLEMENT --write
 ```
 
-Commands validate; they do not grant approval or mutate task records.
+Commands validate and remain read-only by default. Only `transition --write`
+mutates a local task record, after validation and an optimistic-concurrency
+check; it does not grant approval.
 Approvals, evidence, and waivers carry a decision digest, so a later scope or
-plan change requires fresh human authority and fresh verification.
+plan change requires new human authority and new approval-bound verification.
+Projects that need temporal freshness can add that policy in their verification
+adapter; the portable core does not invent a universal age window.
 
 [`examples/pilot/task.json`](examples/pilot/task.json) is an executable,
 evidence-backed task record. Repository tests exercise it through the same CLI
@@ -137,6 +144,11 @@ npx skills add mbourmaud/sillage-workflow --skill researching-with-evidence
 ```
 
 See [skills/README.md](skills/README.md) for the released capability set.
+
+The `working-with-sillage` skill is the full workflow orchestrator: it guides
+cold start, one bounded slice, human decision gates, deterministic verification,
+independent review, blocked-task resumption, and handoff. It is accompanied by
+the executable pilot in [examples/full-workflow](examples/full-workflow).
 
 ## Repository map
 
