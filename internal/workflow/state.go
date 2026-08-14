@@ -99,6 +99,7 @@ type Task struct {
 	Status     Status                `json:"status"`
 	Intent     Intent                `json:"intent"`
 	Execution  *ExecutionPlan        `json:"execution,omitempty"`
+	Delegation *DelegationPlan       `json:"delegation,omitempty"`
 	Decisions  []Decision            `json:"decisions,omitempty"`
 	Acceptance []AcceptanceCriterion `json:"acceptance"`
 	Slices     []Slice               `json:"slices"`
@@ -147,6 +148,33 @@ func (task Task) ExecutionFor(stage Status) (ExecutionProfile, bool) {
 		return profile, true
 	}
 	return task.Execution.Default, true
+}
+
+// DelegationPlan records provider-neutral child-agent requests by lifecycle stage.
+// It describes the requested handoff, not the model or the host mechanism.
+type DelegationPlan struct {
+	Default   DelegationRequest            `json:"default"`
+	Overrides map[Status]DelegationRequest `json:"overrides,omitempty"`
+}
+
+// DelegationRequest describes how the parent agent should handle one stage.
+type DelegationRequest struct {
+	Mode      string `json:"mode"`
+	Role      string `json:"role"`
+	Isolation string `json:"isolation"`
+	Return    string `json:"return"`
+	Required  bool   `json:"required,omitempty"`
+}
+
+// DelegationFor returns the requested delegation policy for a lifecycle stage.
+func (task Task) DelegationFor(stage Status) (DelegationRequest, bool) {
+	if task.Delegation == nil {
+		return DelegationRequest{}, false
+	}
+	if request, ok := task.Delegation.Overrides[stage]; ok {
+		return request, true
+	}
+	return task.Delegation.Default, true
 }
 
 // Blocker records where a blocked task resumes and the observable condition required.
@@ -232,6 +260,9 @@ func ValidateTask(task Task) TransitionResult {
 		return TransitionResult{Code: "invalid_task_contract"}
 	}
 	if !validExecutionPlan(task.Execution) {
+		return TransitionResult{Code: "invalid_task_contract"}
+	}
+	if !validDelegationPlan(task.Delegation) {
 		return TransitionResult{Code: "invalid_task_contract"}
 	}
 	for _, decision := range task.Decisions {
@@ -356,6 +387,69 @@ func validExecutionCapability(capability string) bool {
 func validExecutionEffort(effort string) bool {
 	switch effort {
 	case "low", "medium", "high", "max":
+		return true
+	default:
+		return false
+	}
+}
+
+func validDelegationPlan(plan *DelegationPlan) bool {
+	if plan == nil {
+		return true
+	}
+	if !validDelegationRequest(plan.Default) {
+		return false
+	}
+	for stage, request := range plan.Overrides {
+		if !validStatus(stage) || !validDelegationRequest(request) {
+			return false
+		}
+	}
+	return true
+}
+
+func validDelegationRequest(request DelegationRequest) bool {
+	if !validDelegationMode(request.Mode) || !validDelegationRole(request.Role) ||
+		!validDelegationIsolation(request.Isolation) || !validDelegationReturn(request.Return) {
+		return false
+	}
+	if request.Mode == "parent" {
+		return request.Isolation == "same_context" && !request.Required
+	}
+	return request.Isolation != "same_context"
+}
+
+func validDelegationMode(mode string) bool {
+	return mode == "parent" || mode == "subagent"
+}
+
+func validDelegationRole(role string) bool {
+	if role == "" {
+		return false
+	}
+	for index, character := range role {
+		if (character >= 'a' && character <= 'z') ||
+			(character >= '0' && character <= '9' && index > 0) ||
+			(character == '-' || character == '_') {
+			continue
+		}
+		return false
+	}
+	return role[0] >= 'a' && role[0] <= 'z'
+}
+
+func validDelegationIsolation(isolation string) bool {
+	switch isolation {
+	case "same_context", "read_only", "isolated_worktree":
+		return true
+	default:
+		return false
+	}
+}
+
+func validDelegationReturn(result string) bool {
+	switch result {
+	case "summary", "decision_packet", "implementation_patch", "verification_evidence", "review_findings", "handoff_packet":
 		return true
 	default:
 		return false

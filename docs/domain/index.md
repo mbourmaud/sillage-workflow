@@ -32,6 +32,12 @@ owners: [maintainers]
   capability and effort needed at a task stage. It may be mapped differently by
   each adapter and never grants authority or names a model in the portable
   task record.
+- **Delegation Request** — a provider-neutral request for parent or child-agent
+  work at one task stage. It names a role, isolation boundary, and expected
+  return packet; it never names a model and never grants human authority.
+- **Delegation Packet** — the bounded result returned by a delegated child to
+  its parent. It is an input to review and verification, not approval or
+  evidence until the normal Sillage gates accept it.
 - **Decision Digest** — the lowercase SHA-256 of canonical JSON containing the
   Task intent, acceptance criterion identities/statements/risks, and Slice
   identities/titles/acceptance/dependencies. Operational status, evidence,

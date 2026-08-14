@@ -111,6 +111,10 @@ func TestWorkflowSkillHasPortableLifecycleContract(t *testing.T) {
 		"capability",
 		"effort",
 		"fallback",
+		"delegation plan",
+		"subagent",
+		"isolated_worktree",
+		"return shape",
 		"human",
 	}
 	for _, phrase := range required {

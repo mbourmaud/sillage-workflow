@@ -52,6 +52,35 @@ a verification risk and returns the task to the relevant human gate. Actual
 tokens, tool calls, duration, and cost are recorded only when the adapter
 exposes them; never invent usage data.
 
+## Delegation plan
+
+The delegation plan is optional; use it when a stage benefits from a separate
+agent thread. The parent agent remains the orchestrator and owns the task
+record, lifecycle transitions, human questions, and final synthesis. A
+delegated agent receives one bounded role and returns the requested packet:
+
+- `parent` keeps work in the current conversation;
+- `subagent` asks the host runtime for a child thread;
+- `same_context` is only for parent work, `read_only` is for investigation or
+  review, and `isolated_worktree` is for an implementation child;
+- `summary`, `decision_packet`, `implementation_patch`,
+  `verification_evidence`, `review_findings`, and `handoff_packet` describe the
+  expected return shape, not an automatic approval.
+
+The task record never names a model or provider. The host adapter maps the
+stage's execution profile and role to its available agent configuration. Pass
+the project entry points, task intent, active slice, current decision digest,
+requested isolation, and return shape to the child. Do not pass unrelated chat
+history. Prefer one child per bounded stage; do not let a child recursively
+delegate or change a human-owned decision.
+
+If the host cannot spawn a requested child, an optional request falls back to
+the parent and must be surfaced before its output is used as review or
+verification evidence. A `required` request enters `BLOCKED` with the exact
+resume condition instead of silently downgrading. Child output is an input to
+the parent, not evidence or approval until the parent checks it against the
+current digest and the normal gate.
+
 ## Cold start
 
 At the beginning of a material task, identify the repository root and read only

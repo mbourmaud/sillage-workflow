@@ -18,6 +18,8 @@ All notable changes to Sillage are documented here. This project follows
 - Full-workflow installation and deliberate-update guidance for Agent Skills clients.
 - Provider-neutral execution profiles for matching reasoning capability and
   effort to each workflow stage without naming a model.
+- Provider-neutral delegation requests for bounded parent or subagent work,
+  with explicit isolation and return packets.
 
 ### Changed
 

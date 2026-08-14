@@ -21,6 +21,8 @@ owners: [maintainers]
 - Decision-bound review and handoff artifacts.
 - One orchestration skill that routes research and preserves human gates.
 - Provider-neutral execution profiles for stage-specific capability and effort.
+- Provider-neutral delegation requests for bounded child-agent work, with
+  parent-owned synthesis and human gates.
 - An executable end-to-end pilot without merge, deployment, or external writes.
 
 The kernel is exercised by `make pilot` before it is promoted to a release.
@@ -42,7 +44,7 @@ Each capability is developed and evaluated independently:
 8. Separating verification from review.
 9. Producing resumable handoffs.
 10. Adapter mappings, usage receipts, and budget enforcement for execution
-    profiles.
+    profiles and delegation requests.
 11. Local, GitHub, GitLab, and other task-store adapters.
 
 The roadmap describes intended capability, not committed behavior. Released

@@ -77,6 +77,52 @@ surfaced before relying on affected evidence; actual usage is recorded only
 when the adapter exposes it. Execution profiles are operational and do not
 change the decision digest.
 
+## Delegation plan
+
+The task may also request a child agent for one stage. This is a host adapter
+request, not a second lifecycle or a model selection:
+
+```json
+{
+  "delegation": {
+    "default": {
+      "mode": "parent",
+      "role": "orchestrator",
+      "isolation": "same_context",
+      "return": "summary"
+    },
+    "overrides": {
+      "DECIDE": {
+        "mode": "subagent",
+        "role": "decision_researcher",
+        "isolation": "read_only",
+        "return": "decision_packet",
+        "required": true
+      },
+      "IMPLEMENT": {
+        "mode": "subagent",
+        "role": "builder",
+        "isolation": "isolated_worktree",
+        "return": "implementation_patch"
+      },
+      "REVIEW": {
+        "mode": "subagent",
+        "role": "reviewer",
+        "isolation": "read_only",
+        "return": "review_findings",
+        "required": true
+      }
+    }
+  }
+}
+```
+
+The parent supplies only the project context, task intent, active slice,
+decision digest, requested isolation, and return shape. The host chooses the
+actual model. Optional requests fall back to the parent with an explicit note;
+required requests block until the host can provide a child. Child output is
+review input, never automatic approval or evidence.
+
 ## Verification
 
 ```markdown

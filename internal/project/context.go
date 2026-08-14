@@ -17,14 +17,15 @@ type ProjectContext struct {
 
 // TaskContext describes the current task gate without changing task state.
 type TaskContext struct {
-	ID           string                     `json:"id"`
-	Title        string                     `json:"title"`
-	Status       workflow.Status            `json:"status"`
-	Execution    *workflow.ExecutionProfile `json:"execution,omitempty"`
-	Valid        bool                       `json:"valid"`
-	ActiveSlices []string                   `json:"active_slices"`
-	NextStatus   workflow.Status            `json:"next_status,omitempty"`
-	NextAction   string                     `json:"next_action"`
+	ID           string                      `json:"id"`
+	Title        string                      `json:"title"`
+	Status       workflow.Status             `json:"status"`
+	Execution    *workflow.ExecutionProfile  `json:"execution,omitempty"`
+	Delegation   *workflow.DelegationRequest `json:"delegation,omitempty"`
+	Valid        bool                        `json:"valid"`
+	ActiveSlices []string                    `json:"active_slices"`
+	NextStatus   workflow.Status             `json:"next_status,omitempty"`
+	NextAction   string                      `json:"next_action"`
 }
 
 // Context builds a fresh-agent view without creating or mutating artifacts.
@@ -61,6 +62,9 @@ func TaskStatus(task workflow.Task) TaskContext {
 	}
 	if execution, ok := task.ExecutionFor(task.Status); ok {
 		taskReport.Execution = &execution
+	}
+	if delegation, ok := task.DelegationFor(task.Status); ok {
+		taskReport.Delegation = &delegation
 	}
 	taskReport.NextStatus, taskReport.NextAction = nextGate(task)
 	return taskReport

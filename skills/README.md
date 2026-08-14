@@ -22,7 +22,9 @@ npx skills add mbourmaud/sillage-workflow --skill researching-with-evidence
 The orchestration skill for cold starts, bounded slices, human decision gates,
 deterministic verification, independent review, resumable blocking, and
 handoff. It also recommends provider-neutral capability and effort profiles per
-stage, without naming models or changing human authority. It routes external
+stage, without naming models or changing human authority. It can also request
+bounded parent or subagent work with explicit isolation and return packets;
+host adapters own the actual thread and model selection. It routes external
 research to `researching-with-evidence` instead of creating a competing
 lifecycle. Its evaluation prompts are still draft until the full workflow has
 been exercised on a real project.

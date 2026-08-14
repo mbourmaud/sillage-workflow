@@ -48,3 +48,6 @@ Run the smallest relevant lane first, then the complete repository checks.
 - Commands validate by default and mutate only through explicit verbs.
 - Keep forge-, tracker-, language-, and CI-specific behavior behind profiles or
   adapters.
+- A task's delegation plan may ask the host for one bounded child thread. The
+  parent remains the orchestrator; child output never replaces human approval,
+  evidence validation, or lifecycle gates.

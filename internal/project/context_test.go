@@ -27,6 +27,16 @@ func TestContextReportsReadyProjectAndNextGate(t *testing.T) {
 				workflow.StatusImplement: {Capability: "standard", Effort: "medium"},
 			},
 		},
+		Delegation: &workflow.DelegationPlan{
+			Default: workflow.DelegationRequest{
+				Mode: "parent", Role: "orchestrator", Isolation: "same_context", Return: "summary",
+			},
+			Overrides: map[workflow.Status]workflow.DelegationRequest{
+				workflow.StatusImplement: {
+					Mode: "subagent", Role: "builder", Isolation: "isolated_worktree", Return: "implementation_patch",
+				},
+			},
+		},
 	}
 
 	report := Context(dir, &task)
@@ -41,6 +51,9 @@ func TestContextReportsReadyProjectAndNextGate(t *testing.T) {
 	}
 	if report.Task.Execution == nil || report.Task.Execution.Capability != "standard" || report.Task.Execution.Effort != "medium" {
 		t.Fatalf("expected current execution profile, got %#v", report.Task.Execution)
+	}
+	if report.Task.Delegation == nil || report.Task.Delegation.Mode != "subagent" || report.Task.Delegation.Isolation != "isolated_worktree" {
+		t.Fatalf("expected current delegation request, got %#v", report.Task.Delegation)
 	}
 }
 

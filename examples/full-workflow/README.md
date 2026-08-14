@@ -5,7 +5,9 @@ completed through `DECIDE`, `IMPLEMENT`, and `VERIFY`: an accepted decision,
 human approval, criterion evidence, a completed slice, an accepted review, and
 a digest-bound handoff. It also carries a provider-neutral execution plan:
 deeper reasoning for `DECIDE` and `REVIEW`, standard effort for implementation,
-and a light handoff. The final gate is deliberately still explicit.
+and a light handoff. It also requests a read-only decision/review child and an
+isolated implementation child; the parent remains responsible for synthesis
+and all human gates. The final gate is deliberately still explicit.
 
 Run it from the repository root:
 

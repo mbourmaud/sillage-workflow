@@ -10,7 +10,7 @@ sources: [docs/adr/0001-human-governed-portable-core.md]
 Sillage has four layers:
 
 1. **Protocol** — portable lifecycle, authority, task, slice, evidence,
-   execution-profile, and knowledge contracts.
+   execution-profile, delegation, and knowledge contracts.
 2. **Skills** — judgment about shaping, research, slicing, implementation,
    verification, review, and handoff.
 3. **Deterministic core** — validation of facts and transitions.
@@ -35,6 +35,22 @@ available locally. The core never stores vendor model names, grants authority,
 or claims usage data that an adapter did not expose. The requested profile is
 operational and is therefore excluded from the product decision digest; a
 material fallback must still be surfaced as a verification risk.
+
+## Delegation plans
+
+Tasks may request a separate agent thread for a bounded lifecycle stage. A
+delegation request names only a mode (`parent` or `subagent`), a portable role,
+an isolation boundary, and an expected return packet. `read_only` and
+`isolated_worktree` make the two safe child shapes explicit; a required request
+blocks rather than silently falling back when the host cannot spawn a child.
+
+The parent agent remains the orchestrator and human-facing authority. The
+deterministic core validates the request and exposes it through status/context;
+it does not spawn processes. A host adapter maps the request and the execution
+profile to its own agent threads, models, permissions, and worktree mechanism.
+The child receives a bounded context and returns a packet to the parent. That
+packet becomes evidence, approval, or a lifecycle transition only after the
+parent applies the normal Sillage gates.
 
 ## Workflow authority
 
