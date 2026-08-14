@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/mbourmaud/sillage-workflow/schemas/task.schema.json",
+  "title": "Sillage task",
+  "type": "object",
+  "required": ["id", "title", "status", "intent", "acceptance", "slices"],
+  "properties": {
+    "id": { "$ref": "#/$defs/non_blank" },
+    "title": { "$ref": "#/$defs/non_blank" },
+    "status": { "enum": ["INTAKE", "INVESTIGATE", "DECIDE", "IMPLEMENT", "VERIFY", "REVIEW", "HANDOFF", "BLOCKED"] },
+    "intent": {
+      "type": "object",
+      "required": ["outcome", "scope", "non_goals"],
+      "properties": {
+        "outcome": { "$ref": "#/$defs/non_blank" },
+        "scope": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/non_blank" } },
+        "non_goals": { "type": "array", "items": { "$ref": "#/$defs/non_blank" } }
+      },
+      "additionalProperties": false
+    },
+    "approval": {
+      "type": "object",
+      "required": ["by", "at", "decision_digest"],
+      "properties": {
+        "by": { "type": "string", "pattern": "^human:.*\\S.*$" },
+        "at": { "type": "string", "format": "date-time" },
+        "decision_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "blocked": {
+      "type": "object",
+      "required": ["from", "resume_condition"],
+      "properties": {
+        "from": { "enum": ["INTAKE", "INVESTIGATE", "DECIDE", "IMPLEMENT", "VERIFY", "REVIEW", "HANDOFF"] },
+        "resume_condition": { "$ref": "#/$defs/non_blank" }
+      },
+      "additionalProperties": false
+    },
+    "acceptance": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "statement", "risk"],
+        "properties": {
+          "id": { "$ref": "#/$defs/non_blank" },
+          "statement": { "$ref": "#/$defs/non_blank" },
+          "risk": { "$ref": "#/$defs/non_blank" },
+          "evidence": { "type": "array", "items": { "$ref": "#/$defs/evidence" } },
+          "waiver": { "$ref": "#/$defs/waiver" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "slices": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "status", "acceptance", "dependencies"],
+        "properties": {
+          "id": { "$ref": "#/$defs/non_blank" },
+          "title": { "$ref": "#/$defs/non_blank" },
+          "status": { "enum": ["planned", "active", "complete", "blocked"] },
+          "acceptance": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/non_blank" } },
+          "dependencies": { "type": "array", "items": { "$ref": "#/$defs/non_blank" } }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "non_blank": { "type": "string", "pattern": "\\S" },
+    "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidence": {
+      "type": "object",
+      "required": ["kind", "ref", "observed_at", "result", "decision_digest"],
+      "properties": {
+        "kind": { "$ref": "#/$defs/non_blank" },
+        "ref": { "$ref": "#/$defs/non_blank" },
+        "observed_at": { "type": "string", "format": "date-time" },
+        "result": { "enum": ["passed", "observed"] },
+        "decision_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "waiver": {
+      "type": "object",
+      "required": ["by", "at", "reason", "impact", "decision_digest"],
+      "properties": {
+        "by": { "type": "string", "pattern": "^human:.*\\S.*$" },
+        "at": { "type": "string", "format": "date-time" },
+        "reason": { "$ref": "#/$defs/non_blank" },
+        "impact": { "$ref": "#/$defs/non_blank" },
+        "decision_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "BLOCKED" } }, "required": ["status"] },
+      "then": { "required": ["blocked"] }
+    }
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "project": {
+    "name": "Example",
+    "product": "PRODUCT.md",
+    "design": "DESIGN.md",
+    "agents": "AGENTS.md",
+    "domain": "docs/domain/index.md"
+  },
+  "task_store": { "provider": "local" },
+  "authority": {
+    "human_required": [
+      "product_decision",
+      "scope_change",
+      "destructive_action",
+      "external_write",
+      "evidence_waiver",
+      "merge",
+      "deployment"
+    ]
+  },
+  "verification": {
+    "fast": [{ "name": "unit", "command": "make test" }],
+    "complete": [{ "name": "verify", "command": "make verify" }]
+  }
+}

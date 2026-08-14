@@ -1,0 +1,6 @@
+Orbit Retry 2.4.0 implementation notes
+
+cancelPending marks the retry schedule as cancelled and removes delayed retry
+timers. It does not hold or invoke the AbortHandle of an attempt that has
+already started. Call abortActive(handle) when the caller owns an AbortHandle
+and needs transport cancellation.

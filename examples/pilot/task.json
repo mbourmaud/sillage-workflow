@@ -1,0 +1,46 @@
+{
+  "id": "pilot-001",
+  "title": "Expose the decision digest",
+  "status": "VERIFY",
+  "intent": {
+    "outcome": "A user can calculate the decision digest of a valid task without changing the task record.",
+    "scope": [
+      "Add a read-only digest CLI command",
+      "Return human-readable and JSON output"
+    ],
+    "non_goals": [
+      "Write approvals into a task store",
+      "Merge or deploy changes"
+    ]
+  },
+  "approval": {
+    "by": "human:maintainer",
+    "at": "2026-08-14T10:00:00Z",
+    "decision_digest": "09708a1f15e7bf68433ee4e2937a415e303b8e71d8025cf40a7640d9d7ecf69e"
+  },
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "statement": "The digest command returns the documented decision fingerprint and leaves the task file unchanged.",
+      "risk": "A mutable or unstable digest would make approvals and evidence unreliable.",
+      "evidence": [
+        {
+          "kind": "test",
+          "ref": "go-test:TestDigestPrintsStableDecisionFingerprintWithoutMutatingTask",
+          "observed_at": "2026-08-14T11:00:00Z",
+          "result": "passed",
+          "decision_digest": "09708a1f15e7bf68433ee4e2937a415e303b8e71d8025cf40a7640d9d7ecf69e"
+        }
+      ]
+    }
+  ],
+  "slices": [
+    {
+      "id": "digest-command",
+      "title": "Read-only decision digest command",
+      "status": "complete",
+      "acceptance": ["AC-1"],
+      "dependencies": []
+    }
+  ]
+}
