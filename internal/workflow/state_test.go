@@ -226,6 +226,58 @@ func TestTaskContractRejectsUnknownStatus(t *testing.T) {
 	}
 }
 
+func TestTaskContractAcceptsProviderNeutralExecutionPlan(t *testing.T) {
+	t.Parallel()
+
+	task := validTask()
+	task.Execution = &ExecutionPlan{
+		Default: ExecutionProfile{Capability: "standard", Effort: "medium"},
+		Overrides: map[Status]ExecutionProfile{
+			StatusDecide:    {Capability: "advanced", Effort: "high"},
+			StatusImplement: {Capability: "standard", Effort: "medium"},
+			StatusReview:    {Capability: "advanced", Effort: "high"},
+		},
+	}
+	task.Intent.NonGoals = []string{}
+	task.Slices[0].Dependencies = []string{}
+
+	if result := ValidateTask(task); !result.OK {
+		t.Fatalf("expected provider-neutral execution plan to satisfy the task contract, got %#v", result)
+	}
+}
+
+func TestTaskContractRejectsInvalidExecutionProfile(t *testing.T) {
+	t.Parallel()
+
+	invalid := []ExecutionPlan{
+		{Default: ExecutionProfile{Capability: "vendor-model", Effort: "medium"}},
+		{Default: ExecutionProfile{Capability: "standard", Effort: "unbounded"}},
+		{Default: ExecutionProfile{Capability: "standard", Effort: "medium"}, Overrides: map[Status]ExecutionProfile{
+			Status("MAGIC"): {Capability: "standard", Effort: "medium"},
+		}},
+	}
+	for index, plan := range invalid {
+		task := validTask()
+		task.Execution = &plan
+		if result := ValidateTask(task); result.OK {
+			t.Errorf("invalid execution plan %d was accepted", index)
+		}
+	}
+}
+
+func TestDecisionDigestIgnoresExecutionPlan(t *testing.T) {
+	t.Parallel()
+
+	task := validTask()
+	digest := DecisionDigest(task)
+	task.Execution = &ExecutionPlan{
+		Default: ExecutionProfile{Capability: "frontier", Effort: "max"},
+	}
+	if DecisionDigest(task) != digest {
+		t.Fatal("execution profile changes must not invalidate the product decision digest")
+	}
+}
+
 func validTask() Task {
 	return Task{
 		ID:     "task-1",

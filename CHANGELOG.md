@@ -16,6 +16,8 @@ All notable changes to Sillage are documented here. This project follows
   complete executable pilot.
 - A responsive public website with workflow, installation, and release pages.
 - Full-workflow installation and deliberate-update guidance for Agent Skills clients.
+- Provider-neutral execution profiles for matching reasoning capability and
+  effort to each workflow stage without naming a model.
 
 ### Changed
 

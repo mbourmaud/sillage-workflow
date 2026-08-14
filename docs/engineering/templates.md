@@ -51,6 +51,32 @@ Risk / recovery: <material risk and observable recovery condition>
 An accepted decision changes the task decision digest. Re-open the decision
 gate when its answer, scope, or non-goals change.
 
+## Execution profile
+
+The task may carry a provider-neutral reasoning recommendation. It describes
+the capability and effort needed for the work, not a model name or permission
+to bypass a human gate.
+
+```json
+{
+  "execution": {
+    "default": { "capability": "standard", "effort": "medium" },
+    "overrides": {
+      "DECIDE": { "capability": "advanced", "effort": "high" },
+      "REVIEW": { "capability": "advanced", "effort": "high" }
+    }
+  }
+}
+```
+
+Use `light/low` for orientation and handoff, `standard/medium` for bounded
+implementation, `advanced/high` for research, decisions, and independent
+review, and `frontier/max` only for critical or unresolved high-impact work.
+Adapters choose the available provider mapping. A fallback is recorded and
+surfaced before relying on affected evidence; actual usage is recorded only
+when the adapter exposes it. Execution profiles are operational and do not
+change the decision digest.
+
 ## Verification
 
 ```markdown

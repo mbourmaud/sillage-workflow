@@ -12,7 +12,8 @@
     "category": "Developer Tools",
     "capabilities": [
       "Guide bounded, resumable engineering work",
-      "Research with source authority and explicit evidence"
+      "Research with source authority and explicit evidence",
+      "Recommend provider-neutral reasoning capability and effort per stage"
     ],
     "defaultPrompt": "Use Sillage to keep this task bounded, human-governed, traceable, and evidence-backed."
   }

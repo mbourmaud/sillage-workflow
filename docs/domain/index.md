@@ -28,10 +28,15 @@ owners: [maintainers]
 - **Approval** — an explicit human authorization for a governed transition or
   consequential action. Decision approvals are bound to the deterministic
   digest of the intent, acceptance criteria, and slices they authorize.
+- **Execution Profile** — a provider-neutral recommendation for the reasoning
+  capability and effort needed at a task stage. It may be mapped differently by
+  each adapter and never grants authority or names a model in the portable
+  task record.
 - **Decision Digest** — the lowercase SHA-256 of canonical JSON containing the
   Task intent, acceptance criterion identities/statements/risks, and Slice
   identities/titles/acceptance/dependencies. Operational status, evidence,
-  waivers, approvals, and blockers do not change it.
+  execution profiles, evidence, waivers, approvals, and blockers do not change
+  it.
 - **Waiver** — explicit human acceptance of missing required evidence and its
   residual risk. Like evidence, it is invalidated when the decision digest
   changes.

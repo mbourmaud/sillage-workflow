@@ -13,6 +13,26 @@
       "Merge, deploy, or publish externally"
     ]
   },
+  "execution": {
+    "default": {
+      "capability": "standard",
+      "effort": "medium"
+    },
+    "overrides": {
+      "DECIDE": {
+        "capability": "advanced",
+        "effort": "high"
+      },
+      "REVIEW": {
+        "capability": "advanced",
+        "effort": "high"
+      },
+      "HANDOFF": {
+        "capability": "light",
+        "effort": "low"
+      }
+    }
+  },
   "decisions": [
     {
       "id": "D-1",

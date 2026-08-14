@@ -107,6 +107,10 @@ func TestWorkflowSkillHasPortableLifecycleContract(t *testing.T) {
 		"decision digest",
 		"researching-with-evidence",
 		"Never declare success from code inspection alone",
+		"execution plan",
+		"capability",
+		"effort",
+		"fallback",
 		"human",
 	}
 	for _, phrase := range required {

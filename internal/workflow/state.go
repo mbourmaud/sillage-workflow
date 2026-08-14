@@ -98,6 +98,7 @@ type Task struct {
 	Title      string                `json:"title"`
 	Status     Status                `json:"status"`
 	Intent     Intent                `json:"intent"`
+	Execution  *ExecutionPlan        `json:"execution,omitempty"`
 	Decisions  []Decision            `json:"decisions,omitempty"`
 	Acceptance []AcceptanceCriterion `json:"acceptance"`
 	Slices     []Slice               `json:"slices"`
@@ -121,6 +122,31 @@ type Slice struct {
 	Status       string   `json:"status"`
 	Acceptance   []string `json:"acceptance"`
 	Dependencies []string `json:"dependencies"`
+}
+
+// ExecutionPlan records provider-neutral reasoning requirements for a task.
+// It recommends capability and effort without naming a model or provider.
+type ExecutionPlan struct {
+	Default   ExecutionProfile            `json:"default"`
+	Overrides map[Status]ExecutionProfile `json:"overrides,omitempty"`
+}
+
+// ExecutionProfile describes the minimum reasoning capability and effort a
+// task stage should receive from its configured agent adapter.
+type ExecutionProfile struct {
+	Capability string `json:"capability"`
+	Effort     string `json:"effort"`
+}
+
+// ExecutionFor returns the requested profile for a lifecycle stage.
+func (task Task) ExecutionFor(stage Status) (ExecutionProfile, bool) {
+	if task.Execution == nil {
+		return ExecutionProfile{}, false
+	}
+	if profile, ok := task.Execution.Overrides[stage]; ok {
+		return profile, true
+	}
+	return task.Execution.Default, true
 }
 
 // Blocker records where a blocked task resumes and the observable condition required.
@@ -203,6 +229,9 @@ func ValidateTask(task Task) TransitionResult {
 		return TransitionResult{Code: "invalid_task_contract"}
 	}
 	if len(task.Acceptance) == 0 || len(task.Slices) == 0 {
+		return TransitionResult{Code: "invalid_task_contract"}
+	}
+	if !validExecutionPlan(task.Execution) {
 		return TransitionResult{Code: "invalid_task_contract"}
 	}
 	for _, decision := range task.Decisions {
@@ -290,6 +319,43 @@ func DecisionDigest(task Task) string {
 func validStatus(status Status) bool {
 	switch status {
 	case StatusIntake, StatusInvestigate, StatusDecide, StatusImplement, StatusVerify, StatusReview, StatusHandoff, StatusBlocked:
+		return true
+	default:
+		return false
+	}
+}
+
+func validExecutionPlan(plan *ExecutionPlan) bool {
+	if plan == nil {
+		return true
+	}
+	if !validExecutionProfile(plan.Default) {
+		return false
+	}
+	for stage, profile := range plan.Overrides {
+		if !validStatus(stage) || !validExecutionProfile(profile) {
+			return false
+		}
+	}
+	return true
+}
+
+func validExecutionProfile(profile ExecutionProfile) bool {
+	return validExecutionCapability(profile.Capability) && validExecutionEffort(profile.Effort)
+}
+
+func validExecutionCapability(capability string) bool {
+	switch capability {
+	case "light", "standard", "advanced", "frontier":
+		return true
+	default:
+		return false
+	}
+}
+
+func validExecutionEffort(effort string) bool {
+	switch effort {
+	case "low", "medium", "high", "max":
 		return true
 	default:
 		return false

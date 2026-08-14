@@ -20,6 +20,7 @@ owners: [maintainers]
 - Explicit, atomic local transition writes with optimistic concurrency checks.
 - Decision-bound review and handoff artifacts.
 - One orchestration skill that routes research and preserves human gates.
+- Provider-neutral execution profiles for stage-specific capability and effort.
 - An executable end-to-end pilot without merge, deployment, or external writes.
 
 The kernel is exercised by `make pilot` before it is promoted to a release.
@@ -40,7 +41,9 @@ Each capability is developed and evaluated independently:
 7. Designing and cleaning test evidence.
 8. Separating verification from review.
 9. Producing resumable handoffs.
-10. Local, GitHub, GitLab, and other task-store adapters.
+10. Adapter mappings, usage receipts, and budget enforcement for execution
+    profiles.
+11. Local, GitHub, GitLab, and other task-store adapters.
 
 The roadmap describes intended capability, not committed behavior. Released
 commands and skills remain the authoritative product surface.

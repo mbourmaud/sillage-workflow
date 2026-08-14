@@ -24,6 +24,9 @@ docs/adr/0001-human-governed-portable-core.md.
 - Verification evidence must be addressable, observed after approval, and bound
   to the decision digest. A project-specific adapter may impose a stricter age
   window.
+- Tasks may carry a provider-neutral execution profile: adapters choose the
+  available capability and effort mapping, while fallbacks remain visible
+  verification risks and never grant authority.
 - Review is separate from verification; handoff is separate from review.
 - The core remains independent of language, forge, tracker, package manager,
   and CI provider.

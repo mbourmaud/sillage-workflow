@@ -3,7 +3,9 @@
 This example is a task record at `REVIEW`. Its fields preserve the path already
 completed through `DECIDE`, `IMPLEMENT`, and `VERIFY`: an accepted decision,
 human approval, criterion evidence, a completed slice, an accepted review, and
-a digest-bound handoff. The final gate is deliberately still explicit.
+a digest-bound handoff. It also carries a provider-neutral execution plan:
+deeper reasoning for `DECIDE` and `REVIEW`, standard effort for implementation,
+and a light handoff. The final gate is deliberately still explicit.
 
 Run it from the repository root:
 
