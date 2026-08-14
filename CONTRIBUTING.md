@@ -30,6 +30,10 @@ first, then `make check` before requesting review.
 Keep adapters optional and keep the core free of assumptions about language,
 forge, task store, CI provider, or agent runtime.
 
+Sillage is the sole workflow authority for this repository. New skills and
+automation must use its statuses, task contracts, gates, and evidence model;
+do not add a competing orchestration layer.
+
 ## Releases
 
 Record user-visible changes under the `[Unreleased]` section of

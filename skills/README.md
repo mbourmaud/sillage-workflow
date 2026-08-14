@@ -1,7 +1,9 @@
 # Sillage skills
 
-Skills are published independently so projects install only the judgment they
-need. The deterministic CLI and schemas remain optional companions.
+Every skill in this directory is Sillage-owned and follows the Sillage
+lifecycle and authority model. Skills are published independently so projects
+install only the judgment they need; the deterministic CLI and schemas remain
+optional companions.
 
 ## Released in 0.1.0
 

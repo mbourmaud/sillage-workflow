@@ -23,3 +23,11 @@ adapter may add capability but cannot weaken the authority model silently.
 The Go runtime core uses the standard library and produces standalone binaries.
 Test-only libraries validate JSON Schema and development tooling. JSON is the
 machine contract; Markdown remains the human-readable knowledge format.
+
+## Workflow authority
+
+The Sillage protocol, its task/project schemas, repository skills, deterministic
+CLI, and release checks are the only supported workflow surface. External
+methods are neither runtime dependencies nor alternate lifecycle authorities.
+Ideas may be adapted, but the resulting contract must be expressed in
+Sillage-native statuses, artifacts, gates, and commands.
