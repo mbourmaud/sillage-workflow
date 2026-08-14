@@ -1,4 +1,4 @@
-.PHONY: build check changelog-check contracts format lint release-notes test test-race
+.PHONY: build check changelog-check contracts format lint release-notes site-check test test-race
 
 test:
 	go test ./...
@@ -18,6 +18,9 @@ contracts:
 changelog-check:
 	go run ./cmd/sillage changelog check --file CHANGELOG.md
 
+site-check:
+	go test ./internal/site
+
 release-notes:
 	@test -n "$(VERSION)" || { echo "usage: make release-notes VERSION=vX.Y.Z" >&2; exit 2; }
 	go run ./cmd/sillage changelog extract --file CHANGELOG.md --version "$(VERSION)"
@@ -26,7 +29,7 @@ lint:
 	go vet ./...
 	go tool actionlint
 
-check: format lint test-race contracts changelog-check
+check: format lint test-race contracts changelog-check site-check
 	go run ./cmd/sillage doctor --root .
 
 build:

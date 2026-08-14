@@ -14,6 +14,7 @@ All notable changes to Sillage are documented here. This project follows
   concurrency and symlink protections.
 - `working-with-sillage` orchestration skill, compact workflow templates, and a
   complete executable pilot.
+- A responsive public website with workflow, installation, and release pages.
 
 ### Changed
 

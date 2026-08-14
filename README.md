@@ -5,6 +5,9 @@ work small, state resumable, decisions explicit, and completion claims backed
 by evidence without requiring a particular language, forge, task tracker, or
 CI provider.
 
+**[Visit the Sillage website](https://mbourmaud.github.io/sillage-workflow/)**
+for the visual protocol guide, installation paths, and release notes.
+
 Sillage combines:
 
 - portable Agent Skills for judgment;
