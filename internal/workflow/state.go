@@ -150,7 +150,7 @@ func ValidateTask(task Task) TransitionResult {
 	if blank(task.ID) || blank(task.Title) || !validStatus(task.Status) || blank(task.Intent.Outcome) || !nonBlankStrings(task.Intent.Scope) {
 		return TransitionResult{Code: "invalid_task_contract"}
 	}
-	if !blankFreeStrings(task.Intent.NonGoals) {
+	if task.Intent.NonGoals == nil || !blankFreeStrings(task.Intent.NonGoals) {
 		return TransitionResult{Code: "invalid_task_contract"}
 	}
 	if len(task.Acceptance) == 0 || len(task.Slices) == 0 {
@@ -170,7 +170,7 @@ func ValidateTask(task Task) TransitionResult {
 		}
 	}
 	for _, slice := range task.Slices {
-		if blank(slice.ID) || blank(slice.Title) || !validSliceStatus(slice.Status) || !nonBlankStrings(slice.Acceptance) || !blankFreeStrings(slice.Dependencies) {
+		if blank(slice.ID) || blank(slice.Title) || !validSliceStatus(slice.Status) || !nonBlankStrings(slice.Acceptance) || slice.Dependencies == nil || !blankFreeStrings(slice.Dependencies) {
 			return TransitionResult{Code: "invalid_task_contract"}
 		}
 	}
@@ -188,10 +188,16 @@ func ValidateTask(task Task) TransitionResult {
 
 // DecisionDigest binds approvals and verification records to the exact approved intent and plan.
 func DecisionDigest(task Task) string {
-	type criterion struct{ ID, Statement, Risk string }
+	type criterion struct {
+		ID        string `json:"id"`
+		Statement string `json:"statement"`
+		Risk      string `json:"risk"`
+	}
 	type slice struct {
-		ID, Title                string
-		Acceptance, Dependencies []string
+		ID           string   `json:"id"`
+		Title        string   `json:"title"`
+		Acceptance   []string `json:"acceptance"`
+		Dependencies []string `json:"dependencies"`
 	}
 	payload := struct {
 		Intent     Intent      `json:"intent"`

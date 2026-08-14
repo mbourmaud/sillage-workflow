@@ -8,6 +8,7 @@ CI provider.
 Sillage combines:
 
 - portable Agent Skills for judgment;
+- an Agent Plugins 1.0 distribution manifest;
 - JSON contracts for tasks, slices, projects, and worktrees;
 - a standalone Go CLI for deterministic checks;
 - project profiles that bind the protocol to local tools;
@@ -50,12 +51,25 @@ The CLI has no runtime dependency beyond its compiled binary.
 
 ```sh
 go run ./cmd/sillage doctor --root /path/to/project
+go run ./cmd/sillage digest --task task.json
 go run ./cmd/sillage transition --task task.json --to IMPLEMENT
 ```
 
 Commands validate; they do not grant approval or mutate task records.
 Approvals, evidence, and waivers carry a decision digest, so a later scope or
 plan change requires fresh human authority and fresh verification.
+
+[`examples/pilot/task.json`](examples/pilot/task.json) is an executable,
+evidence-backed task record. Repository tests exercise it through the same CLI
+boundary used by adopters.
+
+## Agent Plugin
+
+The root [`plugin.json`](plugin.json) packages Sillage skills according to
+Agent Plugins 1.0. Agent Plugins is a distribution adapter, not the Sillage
+runtime contract: the Go CLI, task schemas, and project documents remain
+independently usable. No MCP server is bundled until a concrete tool-server
+need exists.
 
 ## Skills
 
@@ -85,9 +99,12 @@ examples/             forge- and language-neutral examples
 ## Development
 
 ```sh
-go test ./...
-go vet ./...
+make check
 ```
+
+The complete gate checks Go formatting, whitespace, `go vet`, GitHub Actions,
+the race-enabled test suite, JSON Schema examples, Agent Skill structure, and
+the Sillage project contract.
 
 ## License
 

@@ -178,6 +178,20 @@ func TestTaskContractRejectsBlankOptionalListMembers(t *testing.T) {
 	}
 }
 
+func TestTaskContractRequiresExplicitEmptyLists(t *testing.T) {
+	t.Parallel()
+
+	task := validTask()
+	if result := ValidateTask(task); result.OK {
+		t.Fatal("expected absent non-goals and dependencies to be rejected")
+	}
+	task.Intent.NonGoals = []string{}
+	task.Slices[0].Dependencies = []string{}
+	if result := ValidateTask(task); !result.OK {
+		t.Fatalf("expected explicit empty lists to satisfy the public schema, got %#v", result)
+	}
+}
+
 func TestInvalidLifecycleJumpIsRejected(t *testing.T) {
 	t.Parallel()
 

@@ -81,6 +81,58 @@ func TestTransitionRejectsTaskThatViolatesPublicContract(t *testing.T) {
 	}
 }
 
+func TestDigestPrintsStableDecisionFingerprintWithoutMutatingTask(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	taskPath := filepath.Join(dir, "task.json")
+	task := `{"id":"task-1","title":"Test","status":"DECIDE","intent":{"outcome":"ship","scope":["core"],"non_goals":[]},"acceptance":[{"id":"AC-1","statement":"works","risk":"incorrect transition"}],"slices":[{"id":"core","title":"Core","status":"active","acceptance":["AC-1"],"dependencies":[]}]}`
+	if err := os.WriteFile(taskPath, []byte(task), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	var stdout bytes.Buffer
+	exitCode := run([]string{"digest", "--task", taskPath, "--json"}, &stdout, &stdout)
+	if exitCode != 0 {
+		t.Fatalf("expected digest command to succeed: %s", stdout.String())
+	}
+	var output struct {
+		DecisionDigest string `json:"decision_digest"`
+	}
+	if err := json.Unmarshal(stdout.Bytes(), &output); err != nil {
+		t.Fatalf("expected JSON output: %v", err)
+	}
+	const expected = "8232538d334742b5156a4f95a77cb98b703e23626734c074ee61c9181655fc1c"
+	if output.DecisionDigest != expected {
+		t.Fatalf("expected stable digest %q, got %q", expected, output.DecisionDigest)
+	}
+	content, err := os.ReadFile(taskPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(content) != task {
+		t.Fatal("digest command must not mutate the task record")
+	}
+}
+
+func TestPilotTaskCanAdvanceFromVerifyToReview(t *testing.T) {
+	t.Parallel()
+
+	taskPath := filepath.Join("..", "..", "examples", "pilot", "task.json")
+	var stdout bytes.Buffer
+	exitCode := run([]string{"transition", "--task", taskPath, "--to", "REVIEW", "--json"}, &stdout, &stdout)
+	if exitCode != 0 {
+		t.Fatalf("expected the public pilot task to pass the verification gate: %s", stdout.String())
+	}
+	var result workflow.TransitionResult
+	if err := json.Unmarshal(stdout.Bytes(), &result); err != nil {
+		t.Fatalf("expected JSON result: %v", err)
+	}
+	if !result.OK || result.Code != "accepted" {
+		t.Fatalf("expected accepted pilot transition, got %#v", result)
+	}
+}
+
 func TestUnknownCommandIsRejected(t *testing.T) {
 	t.Parallel()
 

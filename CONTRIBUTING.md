@@ -24,5 +24,8 @@ Write a focused failing test before changing observable CLI or policy behavior.
 make check
 ```
 
+This is the authoritative local and CI gate. Run the smallest affected Go test
+first, then `make check` before requesting review.
+
 Keep adapters optional and keep the core free of assumptions about language,
 forge, task store, CI provider, or agent runtime.

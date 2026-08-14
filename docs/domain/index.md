@@ -27,6 +27,10 @@ owners: [maintainers]
 - **Approval** — an explicit human authorization for a governed transition or
   consequential action. Decision approvals are bound to the deterministic
   digest of the intent, acceptance criteria, and slices they authorize.
+- **Decision Digest** — the lowercase SHA-256 of canonical JSON containing the
+  Task intent, acceptance criterion identities/statements/risks, and Slice
+  identities/titles/acceptance/dependencies. Operational status, evidence,
+  waivers, approvals, and blockers do not change it.
 - **Waiver** — explicit human acceptance of missing required evidence and its
   residual risk. Like evidence, it is invalidated when the decision digest
   changes.

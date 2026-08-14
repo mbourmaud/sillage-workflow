@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "sillage-workflow",
+  "version": "0.1.0-dev",
+  "description": "A human-governed engineering workflow for coding agents.",
+  "author": {
+    "name": "Mathieu Bourmaud"
+  },
+  "homepage": "https://mbourmaud.github.io/sillage-workflow/",
+  "repository": "https://github.com/mbourmaud/sillage-workflow",
+  "license": "MIT",
+  "keywords": [
+    "agent-workflow",
+    "engineering",
+    "human-in-the-loop",
+    "verification",
+    "agent-skills"
+  ]
+}

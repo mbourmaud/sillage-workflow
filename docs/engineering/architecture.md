@@ -20,5 +20,6 @@ Sillage has four layers:
 The protocol works without the CLI. The CLI works without a remote forge. An
 adapter may add capability but cannot weaken the authority model silently.
 
-The Go core uses the standard library and produces standalone binaries. JSON is
-the machine contract; Markdown remains the human-readable knowledge format.
+The Go runtime core uses the standard library and produces standalone binaries.
+Test-only libraries validate JSON Schema and development tooling. JSON is the
+machine contract; Markdown remains the human-readable knowledge format.

@@ -27,6 +27,8 @@ func run(args []string, stdout io.Writer, stderr io.Writer) int {
 	switch args[0] {
 	case "doctor":
 		return runDoctor(args[1:], stdout, stderr)
+	case "digest":
+		return runDigest(args[1:], stdout, stderr)
 	case "transition":
 		return runTransition(args[1:], stdout, stderr)
 	case "version":
@@ -81,20 +83,9 @@ func runTransition(args []string, stdout io.Writer, stderr io.Writer) int {
 		return 2
 	}
 
-	content, err := os.ReadFile(*taskPath)
+	task, err := readTask(*taskPath)
 	if err != nil {
 		fmt.Fprintln(stderr, err)
-		return 2
-	}
-	var task workflow.Task
-	decoder := json.NewDecoder(bytes.NewReader(content))
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&task); err != nil {
-		fmt.Fprintln(stderr, err)
-		return 2
-	}
-	if err := decoder.Decode(&struct{}{}); err != io.EOF {
-		fmt.Fprintln(stderr, "task must contain exactly one JSON object")
 		return 2
 	}
 	contract := workflow.ValidateTask(task)
@@ -112,6 +103,58 @@ func runTransition(args []string, stdout io.Writer, stderr io.Writer) int {
 	return 0
 }
 
+func runDigest(args []string, stdout io.Writer, stderr io.Writer) int {
+	flags := flag.NewFlagSet("digest", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	taskPath := flags.String("task", "", "task JSON path")
+	jsonOutput := flags.Bool("json", false, "print JSON")
+	if err := flags.Parse(args); err != nil {
+		return 2
+	}
+	if *taskPath == "" {
+		fmt.Fprintln(stderr, "digest requires --task")
+		return 2
+	}
+	task, err := readTask(*taskPath)
+	if err != nil {
+		fmt.Fprintln(stderr, err)
+		return 2
+	}
+	if contract := workflow.ValidateTask(task); !contract.OK {
+		writeTransitionResult(stdout, stderr, contract, *jsonOutput)
+		return 1
+	}
+	digest := workflow.DecisionDigest(task)
+	if *jsonOutput {
+		if err := json.NewEncoder(stdout).Encode(struct {
+			DecisionDigest string `json:"decision_digest"`
+		}{DecisionDigest: digest}); err != nil {
+			fmt.Fprintln(stderr, err)
+			return 2
+		}
+	} else {
+		fmt.Fprintln(stdout, digest)
+	}
+	return 0
+}
+
+func readTask(path string) (workflow.Task, error) {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return workflow.Task{}, err
+	}
+	var task workflow.Task
+	decoder := json.NewDecoder(bytes.NewReader(content))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&task); err != nil {
+		return workflow.Task{}, err
+	}
+	if err := decoder.Decode(&struct{}{}); err != io.EOF {
+		return workflow.Task{}, fmt.Errorf("task must contain exactly one JSON object")
+	}
+	return task, nil
+}
+
 func writeTransitionResult(stdout io.Writer, stderr io.Writer, result workflow.TransitionResult, jsonOutput bool) bool {
 	if jsonOutput {
 		if err := json.NewEncoder(stdout).Encode(result); err != nil {
@@ -125,5 +168,5 @@ func writeTransitionResult(stdout io.Writer, stderr io.Writer, result workflow.T
 }
 
 func printUsage(writer io.Writer) {
-	fmt.Fprintln(writer, "usage: sillage <doctor|transition|version>")
+	fmt.Fprintln(writer, "usage: sillage <doctor|digest|transition|version>")
 }
