@@ -29,6 +29,13 @@ the full workflow has been exercised on a real project.
 npx skills add mbourmaud/sillage-workflow --skill working-with-sillage
 ```
 
+Skills are not updated in the background. Refresh an installed skill at a
+task boundary and run the project's deterministic checks afterwards:
+
+```sh
+npx skills update working-with-sillage --global --yes
+```
+
 Behavioral evaluation fixtures live under `evals/`. The first skill was
 released after baseline comparison, a real Codex installation pilot, and human
 review; the roadmap is not an inventory of future skills.

@@ -15,6 +15,7 @@ All notable changes to Sillage are documented here. This project follows
 - `working-with-sillage` orchestration skill, compact workflow templates, and a
   complete executable pilot.
 - A responsive public website with workflow, installation, and release pages.
+- Full-workflow installation and deliberate-update guidance for Agent Skills clients.
 
 ### Changed
 

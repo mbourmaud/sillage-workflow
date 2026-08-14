@@ -53,6 +53,34 @@ npx skills add mbourmaud/sillage-workflow \
   --agent claude-code --agent codex
 ```
 
+### Full Sillage workflow
+
+Install the orchestration skill when you want the complete lifecycle rather
+than the research capability alone:
+
+```sh
+npx skills add mbourmaud/sillage-workflow \
+  --skill working-with-sillage \
+  --global --agent codex --yes
+```
+
+The skill is usable for pilots and is still marked as a workflow candidate
+until its first independent evaluation is completed.
+
+### Updating
+
+Skills do not update in the background. Update them deliberately at a task
+boundary, then run the project's own checks:
+
+```sh
+npx skills update working-with-sillage --global --yes
+make check
+```
+
+This updates agent guidance only. It does not update Sillage's repository
+schemas, CLI, or project documents; those arrive through the normal repository
+release process.
+
 ### First behavior test
 
 Start a fresh agent task, then ask:
