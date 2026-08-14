@@ -16,33 +16,23 @@ Sillage combines:
 
 ## Status
 
-Sillage is pre-1.0. Version 0.1.0-rc.1 establishes the public protocol, cold-start
+Sillage is pre-1.0. Version 0.1.0 establishes the public protocol, cold-start
 contract, lifecycle validator, and first skill evaluation fixtures. Interfaces
 may evolve as the workflow is exercised on real projects.
 
-## Install the release candidate
+## Install Sillage 0.1.0
 
-The release candidate ships one canonical Agent Skill through several thin
+The release ships one canonical Agent Skill through several thin
 distribution adapters. None of these commands installs the optional Go CLI.
 
 ### Codex
 
 ```sh
-codex plugin marketplace add mbourmaud/sillage-workflow --ref codex/sillage-v0.1
+codex plugin marketplace add mbourmaud/sillage-workflow
 codex plugin add sillage-workflow@sillage
 ```
 
 ### Claude Code
-
-Until the release-candidate branch is merged, clone or open this repository and
-add its local checkout:
-
-```sh
-claude plugin marketplace add .
-claude plugin install sillage-workflow@sillage
-```
-
-After release, the public marketplace command becomes:
 
 ```sh
 claude plugin marketplace add mbourmaud/sillage-workflow
@@ -52,13 +42,7 @@ claude plugin install sillage-workflow@sillage
 ### Any Agent Skills client
 
 The `skills` CLI supports Claude Code, Codex, Cursor, OpenCode, GitHub Copilot,
-and many other clients. Test the checked-out release candidate locally:
-
-```sh
-npx skills add . --skill researching-with-evidence
-```
-
-After release, install from GitHub and name one or more agents explicitly:
+and many other clients. Install from GitHub and name one or more agents explicitly:
 
 ```sh
 npx skills add mbourmaud/sillage-workflow \
@@ -145,7 +129,7 @@ tool-server need exists.
 
 ## Skills
 
-Once released, install skills explicitly so projects do not inherit an
+Install skills explicitly so projects do not inherit an
 overlapping workflow:
 
 ```sh

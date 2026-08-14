@@ -100,7 +100,7 @@ func TestClaudeMarketplacePointsToInstallableBundle(t *testing.T) {
 		} `json:"plugins"`
 	}
 	decodeJSON(t, filepath.Join(root, ".claude-plugin", "marketplace.json"), &marketplace)
-	if marketplace.Name != "sillage" || marketplace.Version != "0.1.0-rc.1" || len(marketplace.Plugins) != 1 {
+	if marketplace.Name != "sillage" || marketplace.Version != "0.1.0" || len(marketplace.Plugins) != 1 {
 		t.Fatalf("unexpected Claude marketplace identity, version, or plugin count")
 	}
 	plugin := marketplace.Plugins[0]
