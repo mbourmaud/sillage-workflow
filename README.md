@@ -202,11 +202,17 @@ examples/             forge- and language-neutral examples
 
 ```sh
 make check
+make pilot
 ```
 
 The complete gate checks Go formatting, whitespace, `go vet`, GitHub Actions,
 the race-enabled test suite, JSON Schema examples, Agent Skill structure, and
 the Sillage project contract.
+
+`make pilot` runs the full local workflow example against a temporary task copy:
+it reads the project contract, reports context and status, performs the explicit
+`REVIEW → HANDOFF` write, and confirms the resulting handoff state. It never
+changes the canonical example or performs an external write.
 
 ## Releases
 

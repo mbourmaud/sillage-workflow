@@ -8,6 +8,12 @@ a digest-bound handoff. The final gate is deliberately still explicit.
 Run it from the repository root:
 
 ```sh
+make pilot
+```
+
+The same pilot can be inspected step by step:
+
+```sh
 go run ./cmd/sillage doctor --root . --json
 go run ./cmd/sillage context --root . --task examples/full-workflow/task.json --json
 go run ./cmd/sillage status --task examples/full-workflow/task.json --json
