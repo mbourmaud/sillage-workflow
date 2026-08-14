@@ -1,7 +1,7 @@
 {
   "name": "sillage-workflow",
   "version": "0.1.0",
-  "description": "A human-governed engineering workflow for coding agents.",
+  "description": "A human-governed, resumable engineering workflow for coding agents.",
   "author": { "name": "Mathieu Bourmaud" },
   "skills": "./skills/",
   "interface": {
@@ -10,7 +10,10 @@
     "longDescription": "Sillage keeps agent work small, decisions human-governed, state resumable, and completion claims backed by evidence.",
     "developerName": "Sillage",
     "category": "Developer Tools",
-    "capabilities": ["Research with source authority and explicit evidence"],
-    "defaultPrompt": "Use Sillage to keep this task bounded, traceable, and evidence-backed."
+    "capabilities": [
+      "Guide bounded, resumable engineering work",
+      "Research with source authority and explicit evidence"
+    ],
+    "defaultPrompt": "Use Sillage to keep this task bounded, human-governed, traceable, and evidence-backed."
   }
 }

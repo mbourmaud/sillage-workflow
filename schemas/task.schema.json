@@ -18,6 +18,10 @@
       },
       "additionalProperties": false
     },
+    "decisions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/decision" }
+    },
     "approval": {
       "type": "object",
       "required": ["by", "at", "decision_digest"],
@@ -68,7 +72,9 @@
         },
         "additionalProperties": false
       }
-    }
+    },
+    "review": { "$ref": "#/$defs/review" },
+    "handoff": { "$ref": "#/$defs/handoff" }
   },
   "$defs": {
     "non_blank": { "type": "string", "pattern": "\\S" },
@@ -93,6 +99,56 @@
         "at": { "type": "string", "format": "date-time" },
         "reason": { "$ref": "#/$defs/non_blank" },
         "impact": { "$ref": "#/$defs/non_blank" },
+        "decision_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "decision": {
+      "type": "object",
+      "required": ["id", "question", "answer", "status", "by", "at"],
+      "properties": {
+        "id": { "$ref": "#/$defs/non_blank" },
+        "question": { "$ref": "#/$defs/non_blank" },
+        "answer": { "$ref": "#/$defs/non_blank" },
+        "status": { "enum": ["accepted", "rejected"] },
+        "by": { "type": "string", "pattern": "^human:.*\\S.*$" },
+        "at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "review": {
+      "type": "object",
+      "required": ["status", "by", "at", "summary", "decision_digest"],
+      "properties": {
+        "status": { "enum": ["accepted", "changes_requested"] },
+        "by": { "type": "string", "pattern": "^(reviewer:|human:).*\\S.*$" },
+        "at": { "type": "string", "format": "date-time" },
+        "summary": { "$ref": "#/$defs/non_blank" },
+        "findings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/review_finding" }
+        },
+        "decision_digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "review_finding": {
+      "type": "object",
+      "required": ["severity", "ref", "detail"],
+      "properties": {
+        "severity": { "enum": ["blocking", "non_blocking"] },
+        "ref": { "$ref": "#/$defs/non_blank" },
+        "detail": { "$ref": "#/$defs/non_blank" }
+      },
+      "additionalProperties": false
+    },
+    "handoff": {
+      "type": "object",
+      "required": ["outcome", "next_action", "at", "decision_digest"],
+      "properties": {
+        "outcome": { "$ref": "#/$defs/non_blank" },
+        "next_action": { "$ref": "#/$defs/non_blank" },
+        "at": { "type": "string", "format": "date-time" },
         "decision_digest": { "$ref": "#/$defs/digest" }
       },
       "additionalProperties": false

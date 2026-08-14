@@ -17,6 +17,8 @@ jobs:
         with:
           go-version-file: go.mod
       - run: make check
+      - name: Validate release changelog
+        run: go run ./cmd/sillage changelog check --file CHANGELOG.md --version "$GITHUB_REF_NAME"
 
   build:
     needs: verify
@@ -62,17 +64,24 @@ jobs:
     needs: build
     runs-on: ubuntu-24.04
     steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version-file: go.mod
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           path: dist
           merge-multiple: true
+      - name: Extract release notes
+        run: go run ./cmd/sillage changelog extract --file CHANGELOG.md --version "$GITHUB_REF_NAME" > dist/release-notes.md
       - name: Publish release artifacts
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPOSITORY: ${{ github.repository }}
         run: |
           if gh release view "$GITHUB_REF_NAME" --repo "$GH_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" dist/* --repo "$GH_REPOSITORY" --clobber
+            gh release upload "$GITHUB_REF_NAME" dist/sillage-* --repo "$GH_REPOSITORY" --clobber
+            gh release edit "$GITHUB_REF_NAME" --repo "$GH_REPOSITORY" --notes-file dist/release-notes.md
           else
-            gh release create "$GITHUB_REF_NAME" dist/* --repo "$GH_REPOSITORY" --generate-notes --verify-tag
+            gh release create "$GITHUB_REF_NAME" dist/sillage-* --repo "$GH_REPOSITORY" --notes-file dist/release-notes.md --verify-tag
           fi

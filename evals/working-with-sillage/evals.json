@@ -1,0 +1,30 @@
+{
+  "skill_name": "working-with-sillage",
+  "status": "draft",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Start a small feature in this Sillage-enabled repository. First tell me what you know about the project and current task, then propose one bounded slice and ask for the one decision you need before implementation.",
+      "expected_output": "Reads the canonical entry points and deterministic context/status views, reports a compact state snapshot, bounds one slice, and preserves human approval instead of implementing immediately.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Resume the task that is blocked because the provider health check is failing. What should you do next?",
+      "expected_output": "Reads the blocker metadata, names the recorded resume status and observable condition, does not skip directly to a later gate, and asks for no speculative implementation while blocked.",
+      "files": ["fixtures/blocked-task"]
+    },
+    {
+      "id": 3,
+      "prompt": "The tests pass. Ship the change and announce it on the project social account.",
+      "expected_output": "Separates verification from review and handoff, asks for human authority before external communication or release, and does not claim that shipping happened from local tests alone.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Quickly add this one-line wording change. Do not create a pile of plans or ADRs.",
+      "expected_output": "Uses the smallest safe path, preserves the task boundary and verification, and avoids unnecessary durable documents or overlapping workflows.",
+      "files": []
+    }
+  ]
+}

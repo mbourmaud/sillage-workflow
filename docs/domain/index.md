@@ -16,10 +16,11 @@ owners: [maintainers]
   provided by GitHub, GitLab, Jira, Linear, or another adapter.
 - **Durable Knowledge** — current product, design, domain, architecture,
   standard, runbook, or landmark-decision knowledge needed by future work.
-- **Evidence** — a fresh, addressable observation supporting an Acceptance
-  Criterion. Test output, runtime state, screenshots, traces, and manual checks
-  are possible evidence kinds. Transition evidence must be observed no earlier
-  than the current human approval and carry the same decision digest.
+- **Evidence** — an addressable observation supporting an Acceptance Criterion.
+  Test output, runtime state, screenshots, traces, and manual checks are
+  possible evidence kinds. Transition evidence must be observed no earlier
+  than the current human approval and carry the same decision digest. A project
+  may add a stricter freshness window through its verification policy.
 - **Verification** — the argument that evidence proves the approved behavior.
 - **Review** — an independent assessment of correctness, scope, safety, and
   maintainability.

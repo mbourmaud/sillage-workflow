@@ -23,7 +23,8 @@ type Report struct {
 	Findings []Finding `json:"findings"`
 }
 
-type entryPoints struct {
+// EntryPoints identifies the canonical project context files.
+type EntryPoints struct {
 	Name    string `json:"name"`
 	Product string `json:"product"`
 	Design  string `json:"design"`
@@ -92,7 +93,7 @@ func decodeStrict(data []byte, target any) error {
 
 type profile struct {
 	Version   int         `json:"version"`
-	Project   entryPoints `json:"project"`
+	Project   EntryPoints `json:"project"`
 	TaskStore taskStore   `json:"task_store"`
 	Authority struct {
 		HumanRequired []string `json:"human_required"`
@@ -131,8 +132,8 @@ func Inspect(root string) Report {
 	return Report{OK: len(findings) == 0, Findings: findings}
 }
 
-func loadEntryPoints(root string) (entryPoints, *Finding) {
-	defaults := entryPoints{
+func loadEntryPoints(root string) (EntryPoints, *Finding) {
+	defaults := EntryPoints{
 		Name:    "Project",
 		Product: "PRODUCT.md",
 		Design:  "DESIGN.md",

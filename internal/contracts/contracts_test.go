@@ -39,6 +39,7 @@ func TestPublishedJSONContractsAcceptRepositoryExamples(t *testing.T) {
 		{"project profile", "schemas/project.schema.json", ".sillage/project.json"},
 		{"local project profile", "schemas/project.schema.json", "examples/local/project.json"},
 		{"pilot task", "schemas/task.schema.json", "examples/pilot/task.json"},
+		{"full workflow task", "schemas/task.schema.json", "examples/full-workflow/task.json"},
 		{"agent plugin", "schemas/vendor/agent-plugins/1.0.0/plugin.schema.json", "plugin.json"},
 	}
 	for _, test := range tests {
@@ -71,17 +72,19 @@ func TestPluginBundleMatchesCanonicalSkill(t *testing.T) {
 	t.Parallel()
 
 	root := repositoryRoot(t)
-	for _, relative := range []string{"SKILL.md", "agents/openai.yaml"} {
-		canonical, err := os.ReadFile(filepath.Join(root, "skills", "researching-with-evidence", relative))
-		if err != nil {
-			t.Fatal(err)
-		}
-		bundled, err := os.ReadFile(filepath.Join(root, "plugins", "sillage-workflow", "skills", "researching-with-evidence", relative))
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !bytes.Equal(canonical, bundled) {
-			t.Fatalf("bundled %s drifted from the canonical skill", relative)
+	for _, skill := range []string{"researching-with-evidence", "working-with-sillage"} {
+		for _, relative := range []string{"SKILL.md", "agents/openai.yaml"} {
+			canonical, err := os.ReadFile(filepath.Join(root, "skills", skill, relative))
+			if err != nil {
+				t.Fatal(err)
+			}
+			bundled, err := os.ReadFile(filepath.Join(root, "plugins", "sillage-workflow", "skills", skill, relative))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Equal(canonical, bundled) {
+				t.Fatalf("bundled %s/%s drifted from the canonical skill", skill, relative)
+			}
 		}
 	}
 }

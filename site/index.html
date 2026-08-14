@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sillage is a human-governed engineering workflow for small, resumable, evidence-backed agent work.">
+    <meta name="theme-color" content="#081b25">
+    <title>Sillage — Build small. Resume cleanly.</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <script defer src="assets/site.js"></script>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="container nav-wrap">
+          <a class="brand" href="index.html" aria-label="Sillage home">
+            <span class="sillage-mark" aria-hidden="true"><i></i><i></i><i></i><b></b></span>
+            <span>Sillage<small>agent workflow</small></span>
+          </a>
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+          <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+            <a href="workflow.html">The workflow</a>
+            <a href="install.html">Install</a>
+            <a href="releases.html">Releases</a>
+            <a class="nav-cta" href="https://github.com/mbourmaud/sillage-workflow">View on GitHub</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="container hero-grid">
+            <div>
+              <p class="eyebrow">A calmer operating system for agentic work</p>
+              <h1>Build small.<br><em>Resume cleanly.</em><br>Ship with proof.</h1>
+              <p class="hero-copy">Sillage gives humans and coding agents a shared language for intent, decisions, slices, evidence, review, and handoff — without turning the repository into a diary.</p>
+              <div class="actions">
+                <a class="button button-primary" href="workflow.html">See how it works <span aria-hidden="true">↗</span></a>
+                <a class="button button-secondary" href="install.html">Install Sillage</a>
+              </div>
+              <p class="hero-note"><span aria-hidden="true"></span> Human decisions stay human-owned.</p>
+            </div>
+
+            <div class="workflow-card" aria-label="Sillage lifecycle preview">
+              <div class="card-kicker"><span>One task, one trail</span><strong>LIVE MODEL</strong></div>
+              <div class="rail">
+                <div class="rail-step is-active"><span class="rail-index">01</span><strong>INTAKE</strong><span class="rail-state">Bound</span></div>
+                <div class="rail-step"><span class="rail-index">02</span><strong>INVESTIGATE</strong><span class="rail-state">Known</span></div>
+                <div class="rail-step"><span class="rail-index">03</span><strong>DECIDE</strong><span class="rail-state">Human</span></div>
+                <div class="rail-step"><span class="rail-index">04</span><strong>IMPLEMENT</strong><span class="rail-state">Small</span></div>
+                <div class="rail-step"><span class="rail-index">05</span><strong>VERIFY</strong><span class="rail-state">Proof</span></div>
+                <div class="rail-step"><span class="rail-index">06</span><strong>REVIEW</strong><span class="rail-state">Separate</span></div>
+                <div class="rail-step"><span class="rail-index">07</span><strong>HANDOFF</strong><span class="rail-state">Ready</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section section-paper">
+          <div class="container">
+            <div class="section-header">
+              <div>
+                <p class="section-label">Why Sillage exists</p>
+                <h2>Less chat history. More usable state.</h2>
+              </div>
+              <p>Agent work gets difficult when the context is large, the slice is vague, and completion means “the code looks right.” Sillage keeps the important state visible and the rest disposable.</p>
+            </div>
+            <div class="protect-grid">
+              <article class="protect-card"><span class="card-number">01 / BOUNDARIES</span><h3>Small slices</h3><p>One implementation worktree represents one understandable slice, with explicit scope and non-goals.</p></article>
+              <article class="protect-card"><span class="card-number">02 / MEMORY</span><h3>Fresh starts</h3><p>PRODUCT, DESIGN, AGENTS, domain language, and a task record let a new agent orient without replaying a chat.</p></article>
+              <article class="protect-card"><span class="card-number">03 / PROOF</span><h3>Evidence first</h3><p>Tests, runtime checks, screenshots, and domain observations sit beside the criterion they prove.</p></article>
+              <article class="protect-card"><span class="card-number">04 / AUTHORITY</span><h3>Human gates</h3><p>Scope, destructive actions, waivers, merges, deployments, and external writes never become agent assumptions.</p></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section dark-section">
+          <div class="container">
+            <div class="section-header">
+              <div><p class="section-label">The mental model</p><h2>A trail, not a maze.</h2></div>
+              <p>Every stage leaves a small artifact or a clear reason to loop back. Operational history stays with the task; durable knowledge stays in its canonical home.</p>
+            </div>
+            <div class="loop-grid">
+              <article class="loop-card"><small>01 / INTENT</small><h3>What are we trying to change?</h3><p>Outcome, scope, non-goals, risks.</p></article>
+              <article class="loop-card"><small>02 / CONTEXT</small><h3>Where are we starting?</h3><p>Project language, current task, active slice.</p></article>
+              <article class="loop-card"><small>03 / DECISION</small><h3>What did the human approve?</h3><p>Choice, boundaries, digest.</p></article>
+              <article class="loop-card"><small>04 / PLAN</small><h3>What is the smallest path?</h3><p>One slice, one worktree, one risk owner.</p></article>
+              <article class="loop-card"><small>05 / IMPLEMENT</small><h3>What changed?</h3><p>Focused code and focused tests.</p></article>
+              <article class="loop-card"><small>06 / VERIFY</small><h3>What can we observe?</h3><p>Deterministic checks and fresh evidence.</p></article>
+              <article class="loop-card"><small>07 / REVIEW</small><h3>Is the claim actually sound?</h3><p>Independent findings, no hidden blockers.</p></article>
+              <article class="loop-card"><small>08 / HANDOFF</small><h3>Can someone resume?</h3><p>Outcome, limits, next safe action.</p></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section section-paper">
+          <div class="container">
+            <div class="section-header">
+              <div><p class="section-label">Designed for both sides</p><h2>Calm for humans. Concrete for agents.</h2></div>
+              <p>Sillage is not an autonomous project manager. It is a shared protocol that makes recommendations legible and consequential actions deliberate.</p>
+            </div>
+            <div class="split">
+              <article class="split-card"><h3>For the human</h3><p>See what is known, what is missing, and where your decision is required.</p><ul><li>Approve intent and scope.</li><li>Accept or reject evidence waivers.</li><li>Own merge, release, deployment, and communication.</li></ul></article>
+              <article class="split-card"><h3>For the agent</h3><p>Get enough context to take one safe next action without inventing project history.</p><ul><li>Read the project contract and domain language.</li><li>Keep one slice active at a time.</li><li>Never call code inspection “done” without proof.</li></ul></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="cta">
+          <div class="container cta-inner">
+            <h2>Make the next task easier to <em>resume.</em></h2>
+            <a class="button button-primary" href="install.html">Start with Sillage <span aria-hidden="true">↗</span></a>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="container footer-inner">
+          <span>© <span data-year>2026</span> Sillage. Human-governed by design.</span>
+          <div class="footer-links"><a href="workflow.html">Workflow</a><a href="releases.html">Changelog</a><a href="https://github.com/mbourmaud/sillage-workflow">GitHub</a></div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

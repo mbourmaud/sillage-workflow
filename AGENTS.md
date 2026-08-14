@@ -21,6 +21,15 @@
 - Ask before destructive actions, external writes, merges, deployments, or
   evidence waivers.
 
+## Workflow authority
+
+- Sillage's lifecycle, task schema, project contract, skills, CLI, and release
+  checks are the sole workflow authority for this repository.
+- Do not introduce or require an external workflow framework, competing status
+  vocabulary, or overlapping orchestration skill.
+- If another method offers a useful idea, translate the invariant into a
+  Sillage-owned artifact and keep the repository interface Sillage-native.
+
 ## Commands
 
 ```sh
