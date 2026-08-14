@@ -88,6 +88,40 @@ func TestResearchSkillHasPortableContract(t *testing.T) {
 	}
 }
 
+func TestWorkflowSkillHasPortableLifecycleContract(t *testing.T) {
+	t.Parallel()
+
+	content := readSkill(t, "working-with-sillage")
+	normalized := strings.Join(strings.Fields(content), " ")
+	required := []string{
+		"INTAKE",
+		"INVESTIGATE",
+		"DECIDE",
+		"IMPLEMENT",
+		"VERIFY",
+		"REVIEW",
+		"HANDOFF",
+		"BLOCKED",
+		"one small task",
+		"one dedicated worktree",
+		"decision digest",
+		"researching-with-evidence",
+		"Never declare success from code inspection alone",
+		"human",
+	}
+	for _, phrase := range required {
+		if !strings.Contains(normalized, phrase) {
+			t.Errorf("workflow skill contract is missing %q", phrase)
+		}
+	}
+	forbidden := []string{"superpowers", "Matt Pocock", "obra/"}
+	for _, phrase := range forbidden {
+		if strings.Contains(content, phrase) {
+			t.Errorf("workflow skill contains competing workflow reference %q", phrase)
+		}
+	}
+}
+
 func readSkill(t *testing.T, name string) string {
 	t.Helper()
 	path := filepath.Join(skillsRoot(t), name, "SKILL.md")

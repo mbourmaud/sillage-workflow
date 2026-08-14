@@ -14,7 +14,7 @@ owners: [maintainers]
 - Public task and project schemas.
 - First research-skill candidate with evaluation fixtures.
 
-## Full workflow kernel (in progress)
+## Full workflow kernel (pilot-ready)
 
 - Deterministic cold-start and task-status views.
 - Explicit, atomic local transition writes with optimistic concurrency checks.
@@ -22,7 +22,10 @@ owners: [maintainers]
 - One orchestration skill that routes research and preserves human gates.
 - An executable end-to-end pilot without merge, deployment, or external writes.
 
-The kernel is exercised on this branch before it is promoted to a release.
+The kernel is exercised by `make pilot` before it is promoted to a release.
+The orchestration skill remains a candidate until an independent baseline run
+and human review are recorded; this is a release gate, not a missing runtime
+capability.
 
 ## Next capabilities
 

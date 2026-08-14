@@ -36,9 +36,21 @@ codex plugin add sillage-workflow@sillage</code></pre></div>
 claude plugin install sillage-workflow@sillage</code></pre></div>
             </section>
 
+            <section id="workflow-skill"><h2>Full Sillage workflow</h2><p>For the complete lifecycle — cold start, bounded slices, human gates, verification, review, blocked resume, and handoff — install the orchestration skill explicitly.</p>
+              <div class="code-card"><button class="copy-button" type="button" data-copy="npx skills add mbourmaud/sillage-workflow --skill working-with-sillage --global --agent codex --yes">Copy</button><pre><code>npx skills add mbourmaud/sillage-workflow \
+  --skill working-with-sillage \
+  --global --agent codex --yes</code></pre></div>
+              <p class="muted">This skill is available for real pilots and is still marked as a workflow candidate until its first independent evaluation is completed.</p>
+            </section>
+
             <section id="skills"><h2>Agent Skills compatible tools</h2><p>For clients that consume the open Agent Skills layout directly, install only the skill you need.</p>
               <div class="code-card"><button class="copy-button" type="button" data-copy="npx skills add mbourmaud/sillage-workflow --skill researching-with-evidence">Copy</button><pre><code>npx skills add mbourmaud/sillage-workflow --skill researching-with-evidence</code></pre></div>
-              <p class="muted">The skill is deliberately useful on its own. The full Sillage workflow becomes active when the project includes its AGENTS.md, project profile, and task records.</p>
+              <p class="muted">The research skill is deliberately useful on its own. The full workflow becomes active when the project also includes its AGENTS.md, project profile, and task records.</p>
+            </section>
+
+            <section id="updates"><h2>Update deliberately</h2><p>Skills do not update in the background. Refresh an installed skill at a task boundary, review the change, and then run the project checks.</p>
+              <div class="code-card"><button class="copy-button" type="button" data-copy="npx skills update working-with-sillage --global --yes">Copy</button><pre><code>npx skills update working-with-sillage --global --yes</code></pre></div>
+              <p class="muted">Updating a skill changes agent guidance only. It does not update the repository’s task schemas, CLI, or project documents.</p>
             </section>
 
             <section id="first-task"><h2>Start the first task</h2><p>From the repository root, ask the agent to orient before it edits anything:</p>
@@ -47,7 +59,7 @@ claude plugin install sillage-workflow@sillage</code></pre></div>
               <p><a class="light-link" href="workflow.html">Read the workflow stages →</a></p>
             </section>
           </div>
-          <aside class="toc" aria-label="On this page"><strong>Install paths</strong><a href="#codex">Codex</a><a href="#claude">Claude Code</a><a href="#skills">Agent Skills</a><a href="#first-task">First task</a></aside>
+          <aside class="toc" aria-label="On this page"><strong>Install paths</strong><a href="#codex">Codex</a><a href="#claude">Claude Code</a><a href="#workflow-skill">Full workflow</a><a href="#skills">Agent Skills</a><a href="#updates">Updates</a><a href="#first-task">First task</a></aside>
         </div></section>
 
         <section class="cta"><div class="container cta-inner"><h2>Keep the protocol <em>portable.</em></h2><a class="button button-primary" href="https://github.com/mbourmaud/sillage-workflow">Inspect the source <span aria-hidden="true">↗</span></a></div></section>

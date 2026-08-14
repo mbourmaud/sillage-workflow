@@ -53,6 +53,34 @@ npx skills add mbourmaud/sillage-workflow \
   --agent claude-code --agent codex
 ```
 
+### Full Sillage workflow
+
+Install the orchestration skill when you want the complete lifecycle rather
+than the research capability alone:
+
+```sh
+npx skills add mbourmaud/sillage-workflow \
+  --skill working-with-sillage \
+  --global --agent codex --yes
+```
+
+The skill is usable for pilots and is still marked as a workflow candidate
+until its first independent evaluation is completed.
+
+### Updating
+
+Skills do not update in the background. Update them deliberately at a task
+boundary, then run the project's own checks:
+
+```sh
+npx skills update working-with-sillage --global --yes
+make check
+```
+
+This updates agent guidance only. It does not update Sillage's repository
+schemas, CLI, or project documents; those arrive through the normal repository
+release process.
+
 ### First behavior test
 
 Start a fresh agent task, then ask:
@@ -174,11 +202,17 @@ examples/             forge- and language-neutral examples
 
 ```sh
 make check
+make pilot
 ```
 
 The complete gate checks Go formatting, whitespace, `go vet`, GitHub Actions,
 the race-enabled test suite, JSON Schema examples, Agent Skill structure, and
 the Sillage project contract.
+
+`make pilot` runs the full local workflow example against a temporary task copy:
+it reads the project contract, reports context and status, performs the explicit
+`REVIEW → HANDOFF` write, and confirms the resulting handoff state. It never
+changes the canonical example or performs an external write.
 
 ## Releases
 

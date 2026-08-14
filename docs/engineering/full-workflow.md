@@ -135,13 +135,15 @@ docs/adr/0001-human-governed-portable-core.md.
 - [x] Write baseline prompts for normal feature intake, blocked resume, and a
   tiny reversible change.
 - [ ] Run the baseline without the skill and retain the result. (Requires a
-  separate fresh-agent evaluation run.)
+  separate fresh-agent evaluation run; the deterministic pilot does not claim
+  to replace this comparison.)
 - [x] Write the skill with explicit human gates and no automatic repository
   documentation.
 - [x] Copy the canonical skill into the distribution bundle and add a
   byte-for-byte contract test.
 - [ ] Run the same prompts with the skill and record qualitative differences.
-  (The evaluation fixture is intentionally draft until that run.)
+  (The evaluation fixture remains a release gate; the executable pilot proves
+  the deterministic core and installation path.)
 
 ### Task 5: Add a complete executable pilot
 

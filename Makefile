@@ -1,4 +1,4 @@
-.PHONY: build check changelog-check contracts format lint release-notes site-check test test-race
+.PHONY: build check changelog-check contracts format lint pilot release-notes site-check test test-race
 
 test:
 	go test ./...
@@ -20,6 +20,17 @@ changelog-check:
 
 site-check:
 	go test ./internal/site
+
+pilot:
+	@set -eu; \
+	 task_file=$$(mktemp "$${TMPDIR:-/tmp}/sillage-pilot.XXXXXX"); \
+	 trap 'rm -f "$$task_file"' EXIT; \
+	 cp examples/full-workflow/task.json "$$task_file"; \
+	 go run ./cmd/sillage doctor --root . --json; \
+	 go run ./cmd/sillage context --root . --task examples/full-workflow/task.json --json; \
+	 go run ./cmd/sillage status --task "$$task_file" --json; \
+	 go run ./cmd/sillage transition --task "$$task_file" --to HANDOFF --write --json; \
+	 go run ./cmd/sillage status --task "$$task_file" --json
 
 release-notes:
 	@test -n "$(VERSION)" || { echo "usage: make release-notes VERSION=vX.Y.Z" >&2; exit 2; }
