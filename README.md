@@ -20,17 +20,55 @@ Sillage is pre-1.0. Version 0.1.0-rc.1 establishes the public protocol, cold-sta
 contract, lifecycle validator, and first skill evaluation fixtures. Interfaces
 may evolve as the workflow is exercised on real projects.
 
-## Install the release candidate in Codex
+## Install the release candidate
 
-The first public test installs the `researching-with-evidence` skill through
-the Codex plugin marketplace. It does not install the optional Go CLI.
+The release candidate ships one canonical Agent Skill through several thin
+distribution adapters. None of these commands installs the optional Go CLI.
+
+### Codex
 
 ```sh
 codex plugin marketplace add mbourmaud/sillage-workflow --ref codex/sillage-v0.1
 codex plugin add sillage-workflow@sillage
 ```
 
-Start a new Codex task, then ask:
+### Claude Code
+
+Until the release-candidate branch is merged, clone or open this repository and
+add its local checkout:
+
+```sh
+claude plugin marketplace add .
+claude plugin install sillage-workflow@sillage
+```
+
+After release, the public marketplace command becomes:
+
+```sh
+claude plugin marketplace add mbourmaud/sillage-workflow
+claude plugin install sillage-workflow@sillage
+```
+
+### Any Agent Skills client
+
+The `skills` CLI supports Claude Code, Codex, Cursor, OpenCode, GitHub Copilot,
+and many other clients. Test the checked-out release candidate locally:
+
+```sh
+npx skills add . --skill researching-with-evidence
+```
+
+After release, install from GitHub and name one or more agents explicitly:
+
+```sh
+npx skills add mbourmaud/sillage-workflow \
+  --skill researching-with-evidence \
+  --agent claude-code --agent codex
+```
+
+### First behavior test
+
+Start a fresh agent task, then ask:
 
 ```text
 Use the researching-with-evidence skill. Determine whether Agent Plugins 1.0
@@ -41,11 +79,14 @@ from inference, and return an evidence packet without creating repository docs.
 The expected result names the skill, states the research question and consumer,
 uses current primary sources with dates or versions, distinguishes inference
 and unknowns, and proposes no durable document unless one has a clear owner.
-Remove the test installation with:
+Remove a marketplace installation with the matching client:
 
 ```sh
 codex plugin remove sillage-workflow@sillage
 codex plugin marketplace remove sillage
+
+claude plugin uninstall sillage-workflow@sillage
+claude plugin marketplace remove sillage
 ```
 
 ## Core lifecycle
@@ -94,12 +135,13 @@ boundary used by adopters.
 ## Agent Plugin
 
 The root [`plugin.json`](plugin.json) packages Sillage skills according to
-Agent Plugins 1.0. The Codex marketplace adapter lives in
-[`plugins/sillage-workflow`](plugins/sillage-workflow); contract tests keep its
-generated skill payload identical to the canonical source under `skills/`.
-Agent Plugins is a distribution adapter, not the Sillage runtime contract: the
-Go CLI, task schemas, and project documents remain independently usable. No MCP
-server is bundled until a concrete tool-server need exists.
+Agent Plugins 1.0. Codex and Claude Code marketplace manifests point to the same
+[`plugins/sillage-workflow`](plugins/sillage-workflow) bundle; contract tests
+keep its payload identical to the canonical source under `skills/` and its
+version aligned across ecosystems. Agent Plugins is a distribution adapter, not
+the Sillage runtime contract: the Go CLI, task schemas, and project documents
+remain independently usable. No MCP server is bundled until a concrete
+tool-server need exists.
 
 ## Skills
 
@@ -119,6 +161,7 @@ cmd/sillage/          CLI
 internal/             deterministic workflow policies
 schemas/              portable JSON schemas
 skills/               original Agent Skills
+plugins/              generated multi-client distribution bundle
 evals/                behavioral evaluation prompts
 docs/domain/          Sillage's domain language
 docs/engineering/     current system documentation

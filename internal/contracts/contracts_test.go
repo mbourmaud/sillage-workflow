@@ -67,7 +67,7 @@ func TestPublishedJSONContractsAcceptRepositoryExamples(t *testing.T) {
 	}
 }
 
-func TestCodexPluginBundleMatchesCanonicalSkill(t *testing.T) {
+func TestPluginBundleMatchesCanonicalSkill(t *testing.T) {
 	t.Parallel()
 
 	root := repositoryRoot(t)
@@ -83,6 +83,32 @@ func TestCodexPluginBundleMatchesCanonicalSkill(t *testing.T) {
 		if !bytes.Equal(canonical, bundled) {
 			t.Fatalf("bundled %s drifted from the canonical skill", relative)
 		}
+	}
+}
+
+func TestClaudeMarketplacePointsToInstallableBundle(t *testing.T) {
+	t.Parallel()
+
+	root := repositoryRoot(t)
+	var marketplace struct {
+		Name    string `json:"name"`
+		Version string `json:"version"`
+		Plugins []struct {
+			Name    string `json:"name"`
+			Version string `json:"version"`
+			Source  string `json:"source"`
+		} `json:"plugins"`
+	}
+	decodeJSON(t, filepath.Join(root, ".claude-plugin", "marketplace.json"), &marketplace)
+	if marketplace.Name != "sillage" || marketplace.Version != "0.1.0-rc.1" || len(marketplace.Plugins) != 1 {
+		t.Fatalf("unexpected Claude marketplace identity, version, or plugin count")
+	}
+	plugin := marketplace.Plugins[0]
+	if plugin.Name != "sillage-workflow" || plugin.Version != marketplace.Version || plugin.Source != "./plugins/sillage-workflow" {
+		t.Fatalf("Claude marketplace does not point to the versioned Sillage plugin bundle")
+	}
+	if _, err := os.Stat(filepath.Join(root, plugin.Source, ".claude-plugin", "plugin.json")); err != nil {
+		t.Fatalf("marketplace target is not an installable Claude plugin: %v", err)
 	}
 }
 
@@ -113,18 +139,19 @@ func TestCodexMarketplacePointsToInstallableBundle(t *testing.T) {
 	}
 }
 
-func TestCodexAndPortablePluginVersionsMatch(t *testing.T) {
+func TestEcosystemPluginVersionsMatch(t *testing.T) {
 	t.Parallel()
 
 	root := repositoryRoot(t)
-	var portable, codex struct {
+	var portable, codex, claude struct {
 		Name    string `json:"name"`
 		Version string `json:"version"`
 	}
 	decodeJSON(t, filepath.Join(root, "plugin.json"), &portable)
 	decodeJSON(t, filepath.Join(root, "plugins", "sillage-workflow", ".codex-plugin", "plugin.json"), &codex)
-	if portable.Name != codex.Name || portable.Version != codex.Version {
-		t.Fatalf("plugin manifests disagree: portable=%s@%s codex=%s@%s", portable.Name, portable.Version, codex.Name, codex.Version)
+	decodeJSON(t, filepath.Join(root, "plugins", "sillage-workflow", ".claude-plugin", "plugin.json"), &claude)
+	if portable.Name != codex.Name || portable.Name != claude.Name || portable.Version != codex.Version || portable.Version != claude.Version {
+		t.Fatalf("plugin manifests disagree: portable=%s@%s codex=%s@%s claude=%s@%s", portable.Name, portable.Version, codex.Name, codex.Version, claude.Name, claude.Version)
 	}
 }
 

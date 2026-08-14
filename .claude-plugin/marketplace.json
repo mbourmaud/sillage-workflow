@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "sillage",
+  "version": "0.1.0-rc.1",
+  "description": "Human-governed engineering workflow skills.",
+  "owner": {
+    "name": "Mathieu Bourmaud"
+  },
+  "plugins": [
+    {
+      "name": "sillage-workflow",
+      "version": "0.1.0-rc.1",
+      "description": "Keep agent work small, resumable, and evidence-backed.",
+      "author": {
+        "name": "Mathieu Bourmaud"
+      },
+      "source": "./plugins/sillage-workflow",
+      "category": "development"
+    }
+  ]
+}
