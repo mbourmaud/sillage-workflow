@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/mbourmaud/sillage-workflow/internal/project"
+	"github.com/mbourmaud/sillage-workflow/internal/release"
 	"github.com/mbourmaud/sillage-workflow/internal/taskstore"
 	"github.com/mbourmaud/sillage-workflow/internal/workflow"
 )
@@ -32,6 +33,8 @@ func run(args []string, stdout io.Writer, stderr io.Writer) int {
 		return runContext(args[1:], stdout, stderr)
 	case "status":
 		return runStatus(args[1:], stdout, stderr)
+	case "changelog":
+		return runChangelog(args[1:], stdout, stderr)
 	case "digest":
 		return runDigest(args[1:], stdout, stderr)
 	case "transition":
@@ -158,6 +161,52 @@ func runStatus(args []string, stdout io.Writer, stderr io.Writer) int {
 	return 0
 }
 
+func runChangelog(args []string, stdout io.Writer, stderr io.Writer) int {
+	if len(args) == 0 {
+		fmt.Fprintln(stderr, "changelog requires check or extract")
+		return 2
+	}
+	command := args[0]
+	flags := flag.NewFlagSet("changelog "+command, flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	path := flags.String("file", "CHANGELOG.md", "changelog path")
+	version := flags.String("version", "", "release version, with or without a leading v")
+	if err := flags.Parse(args[1:]); err != nil {
+		return 2
+	}
+	switch command {
+	case "check":
+		if err := release.Check(*path, *version); err != nil {
+			fmt.Fprintf(stderr, "changelog: %s\n", err)
+			return 1
+		}
+		if *version == "" {
+			fmt.Fprintln(stdout, "changelog: ready")
+		} else {
+			fmt.Fprintf(stdout, "changelog: %s ready\n", *version)
+		}
+		return 0
+	case "extract":
+		if *version == "" {
+			fmt.Fprintln(stderr, "changelog extract requires --version")
+			return 2
+		}
+		notes, err := release.Extract(*path, *version)
+		if err != nil {
+			fmt.Fprintf(stderr, "changelog: %s\n", err)
+			return 1
+		}
+		if _, err := io.WriteString(stdout, notes); err != nil {
+			fmt.Fprintln(stderr, err)
+			return 2
+		}
+		return 0
+	default:
+		fmt.Fprintf(stderr, "unknown changelog command %q (use check or extract)\n", command)
+		return 2
+	}
+}
+
 func runTransition(args []string, stdout io.Writer, stderr io.Writer) int {
 	flags := flag.NewFlagSet("transition", flag.ContinueOnError)
 	flags.SetOutput(stderr)
@@ -273,5 +322,5 @@ func writeTransitionResult(stdout io.Writer, stderr io.Writer, result workflow.T
 }
 
 func printUsage(writer io.Writer) {
-	fmt.Fprintln(writer, "usage: sillage <doctor|context|status|digest|transition|version>")
+	fmt.Fprintln(writer, "usage: sillage <doctor|context|status|changelog|digest|transition|version>")
 }

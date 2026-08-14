@@ -12,5 +12,6 @@ page explains the protocol/runtime/adapter boundaries.
 
 - [Architecture](architecture.md)
 - [Durable knowledge](knowledge.md)
+- [Release process](release.md)
 - [Roadmap](roadmap.md)
 - [Test evidence](test-evidence.md)

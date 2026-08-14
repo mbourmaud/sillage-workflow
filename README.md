@@ -106,6 +106,8 @@ The CLI has no runtime dependency beyond its compiled binary.
 go run ./cmd/sillage doctor --root /path/to/project
 go run ./cmd/sillage context --root /path/to/project --task task.json --json
 go run ./cmd/sillage status --task task.json --json
+go run ./cmd/sillage changelog check --version v0.1.0
+go run ./cmd/sillage changelog extract --version v0.1.0
 go run ./cmd/sillage digest --task task.json
 go run ./cmd/sillage transition --task task.json --to IMPLEMENT
 go run ./cmd/sillage transition --task task.json --to IMPLEMENT --write
@@ -174,6 +176,19 @@ make check
 The complete gate checks Go formatting, whitespace, `go vet`, GitHub Actions,
 the race-enabled test suite, JSON Schema examples, Agent Skill structure, and
 the Sillage project contract.
+
+## Releases
+
+Keep user-visible changes in [`CHANGELOG.md`](CHANGELOG.md) under
+`[Unreleased]`. Before a human-approved tag, run:
+
+```sh
+make check
+make release-notes VERSION=vX.Y.Z
+```
+
+CI requires the matching version section and publishes those exact notes with
+the release.
 
 ## License
 

@@ -29,3 +29,19 @@ first, then `make check` before requesting review.
 
 Keep adapters optional and keep the core free of assumptions about language,
 forge, task store, CI provider, or agent runtime.
+
+## Releases
+
+Record user-visible changes under the `[Unreleased]` section of
+[`CHANGELOG.md`](CHANGELOG.md). Before tagging a release, move those entries
+to a dated version section, leave a new `[Unreleased]` section at the top, and
+run:
+
+```sh
+make check
+make release-notes VERSION=vX.Y.Z
+```
+
+The release workflow rejects a tag without a matching non-empty changelog
+section and uses that section as the published release notes. Tagging,
+publishing, merging, and external announcements remain human decisions.

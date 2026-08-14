@@ -220,6 +220,33 @@ func TestUnknownCommandIsRejected(t *testing.T) {
 	}
 }
 
+func TestChangelogCheckAndExtract(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "CHANGELOG.md")
+	content := "# Changelog\n\n## [Unreleased]\n\n### Added\n\n- Next.\n\n## [0.2.0] - 2026-08-14\n\n### Added\n\n- Full workflow.\n"
+	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	var checked bytes.Buffer
+	if exitCode := run([]string{"changelog", "check", "--file", path, "--version", "v0.2.0"}, &checked, &checked); exitCode != 0 {
+		t.Fatalf("expected changelog check to pass: %s", checked.String())
+	}
+	if !bytes.Contains(checked.Bytes(), []byte("0.2.0")) {
+		t.Fatalf("expected version in check output, got %q", checked.String())
+	}
+
+	var notes bytes.Buffer
+	if exitCode := run([]string{"changelog", "extract", "--file", path, "--version", "0.2.0"}, &notes, &notes); exitCode != 0 {
+		t.Fatalf("expected changelog extraction to pass: %s", notes.String())
+	}
+	if notes.String() != "### Added\n\n- Full workflow.\n" {
+		t.Fatalf("unexpected release notes: %q", notes.String())
+	}
+}
+
 func TestContextPrintsColdStartJSON(t *testing.T) {
 	t.Parallel()
 
