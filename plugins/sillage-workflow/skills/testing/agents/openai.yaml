@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / Testing"
+  short_description: "Choose behavioral seams and test ownership"
+  default_prompt: "Use $testing to shape a risk-based test strategy."
+policy:
+  allow_implicit_invocation: true

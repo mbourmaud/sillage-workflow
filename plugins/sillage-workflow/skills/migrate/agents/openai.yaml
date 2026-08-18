@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / migrate"
+  short_description: "Sillage guidance for migrate"
+  default_prompt: "Use $migrate for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

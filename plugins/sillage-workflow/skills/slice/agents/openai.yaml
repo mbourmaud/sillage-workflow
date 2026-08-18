@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / slice"
+  short_description: "Sillage guidance for slice"
+  default_prompt: "Use $slice for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

@@ -11,19 +11,36 @@ Sillage has four layers:
 
 1. **Protocol** — portable lifecycle, authority, task, slice, evidence,
    execution-profile, delegation, and knowledge contracts.
-2. **Skills** — judgment about shaping, research, slicing, implementation,
-   verification, review, and handoff.
+2. **Skills** — the portable product: implicit routing, shaping, research,
+   slicing, implementation, verification, review, handoff, and progressive
+   architecture, testing, DDD, interface, systems, security, platform,
+   frontend, and data lenses.
 3. **Deterministic core** — validation of facts and transitions.
 4. **Adapters** — task stores, workspace isolation, version control,
    verification commands, agent capability/effort mappings, and publication
    mechanisms.
 
-The protocol works without the CLI. The CLI works without a remote forge. An
-adapter may add capability but cannot weaken the authority model silently.
+The protocol works with Markdown skills and the project's native commands. The
+CLI, schemas, and task store are optional deterministic adapters. An adapter may
+add capability but cannot weaken the authority model silently.
+
+## Language-neutral engineering doctrine
+
+The doctrine is intentionally smaller than a software architecture textbook.
+It asks what pressure exists, who owns the decision, where the stable seam is,
+what pattern or no-pattern reduces the risk, how failure and compatibility are
+handled, and what observation would prove the claim. DDD, SOLID, Clean
+Architecture, KISS, DRY, YAGNI, design patterns, HTTP, networking, security,
+and platform conventions are invoked as lenses, not universal structures.
+
+External technical skills can contribute a source, rule, or specialist review
+through an adapter. The Sillage task remains the lifecycle authority: external
+skills cannot create statuses, grant approval, or self-declare evidence.
 
 The Go runtime core uses the standard library and produces standalone binaries.
-Test-only libraries validate JSON Schema and development tooling. JSON is the
-machine contract; Markdown remains the human-readable knowledge format.
+Test-only libraries validate JSON Schema and development tooling. Markdown is
+the portable human contract; JSON is an optional machine contract when a
+project wants deterministic adapter validation.
 
 ## Execution profiles
 
@@ -54,8 +71,9 @@ parent applies the normal Sillage gates.
 
 ## Workflow authority
 
-The Sillage protocol, its task/project schemas, repository skills, deterministic
-CLI, and release checks are the only supported workflow surface. External
-methods are neither runtime dependencies nor alternate lifecycle authorities.
-Ideas may be adapted, but the resulting contract must be expressed in
-Sillage-native statuses, artifacts, gates, and commands.
+The Sillage protocol, repository skills, Markdown artifacts, and release checks
+are the only supported workflow surface. The optional CLI and schemas validate
+that surface but do not replace it. External methods are neither runtime
+dependencies nor alternate lifecycle authorities. Ideas may be adapted, but
+the resulting contract must be expressed in Sillage-native statuses, artifacts,
+gates, and commands.

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / relational-data"
+  short_description: "Sillage guidance for relational-data"
+  default_prompt: "Use $relational-data for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

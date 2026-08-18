@@ -6,32 +6,60 @@ owners: [maintainers]
 
 # Workflow templates
 
-These are compact human-readable prompts for the operational task record. Keep
-the authoritative machine state in the configured task store and promote only
-durable knowledge to its canonical page.
+These are compact Markdown prompts for the operational task card. A repository
+may mirror them into JSON or a task store, but no CLI or machine format is
+required. Keep one active card per vertical and promote only durable knowledge
+to its canonical page.
 
-## Task / spec
+## Task card / spec
 
 ```markdown
 ## Task <id> — <title>
 
 Status: INTAKE
 
+### TL;DR
+<one sentence a reviewer can repeat>
+
 ### Intent
 - Outcome: <observable result>
+- Consumer: <who or what uses it>
+- Class: probe | bounded | cross-cutting
 - Scope: <one bounded slice>
 - Non-goals: <explicit exclusions>
+
+### Engineering lenses
+- Primary risk lens: <architecture | testing | ddd | interface | systems |
+  security | platform | frontend | relational-data | document-data | none>
+- Secondary lenses: <only when a distinct risk needs them>
 
 ### Acceptance
 - [ ] <observable criterion> (risk: <what could be wrong>)
 
-### Slice
-- ID: <slice-id>
-- Dependencies: <none or named dependency>
+### Decision
+- Status: awaiting human | accepted | rejected
+- Answer: <chosen behavior and why>
+- By / at: <identity and timestamp>
 
-### Open decision
-<one focused question, or “none”>
+### Slice / plan
+- ID: <slice-id>
+- Worktree: <path or “not applicable”>
+- Dependencies: <none or named prerequisite>
+- Stop condition: <when to split or return to shaping>
+
+### Verification
+- [ ] <criterion> — check: <native command or runtime observation>
+
+### Review
+Pending.
+
+### Handoff
+Pending.
 ```
+
+The TL;DR, intent, decision, slice, proof, review, and handoff are the
+reviewer's progressive-disclosure path. Keep detail in the relevant section;
+do not create a separate file for every stage.
 
 ## Decision
 
@@ -138,7 +166,8 @@ Notes: <limits, skipped checks, or none>
 
 Evidence belongs beside the criterion it proves. A skipped check records its
 impact and needs an explicit human waiver; inspection alone is not evidence of
-completion.
+completion. Native project commands are the default proof surface; a Sillage
+CLI is optional.
 
 ## Review
 

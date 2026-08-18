@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / review"
+  short_description: "Sillage guidance for review"
+  default_prompt: "Use $review for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

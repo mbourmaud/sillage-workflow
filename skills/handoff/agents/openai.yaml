@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / handoff"
+  short_description: "Sillage guidance for handoff"
+  default_prompt: "Use $handoff for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

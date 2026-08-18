@@ -1,13 +1,13 @@
 # Sillage Full Workflow Implementation Plan
 
 **Goal:** make the complete Sillage lifecycle usable from a fresh agent
-conversation through a resumable handoff, with one canonical task record and
-deterministic gates.
+conversation through a resumable handoff, with one compact Markdown task card
+and deterministic project-native gates.
 
-**Architecture:** The task JSON remains the machine contract and local task
-store. The project entry files remain the human context contract. The CLI
-provides read-only cold-start/status views plus explicit state mutation; skills
-provide judgment and conversation routing, not hidden state or provider writes.
+**Architecture:** The Markdown task card and project entry files are the human
+context contract. Skills provide judgment and conversation routing. JSON,
+task-store adapters, and the CLI provide optional deterministic views or
+validation; they never become prerequisites or hidden state.
 
 **Tech Stack:** Go standard library, JSON Schema Draft 2020-12, Markdown Agent
 Skills, local files, GitHub Actions.
@@ -20,7 +20,8 @@ docs/adr/0001-human-governed-portable-core.md.
 - Humans control product decisions, scope changes, destructive actions,
   external writes, evidence waivers, merges, and deployments.
 - One implementation worktree owns exactly one active slice.
-- Commands validate by default; state mutation requires an explicit --write.
+- Optional commands validate by default; state mutation requires an explicit
+  --write.
 - Verification evidence must be addressable, observed after approval, and bound
   to the decision digest. A project-specific adapter may impose a stricter age
   window.
@@ -121,9 +122,9 @@ docs/adr/0001-human-governed-portable-core.md.
 
 **Files:**
 
-- Create: skills/working-with-sillage/SKILL.md
-- Create: skills/working-with-sillage/agents/openai.yaml
-- Create: evals/working-with-sillage/evals.json
+- Create: skills/sillage/SKILL.md
+- Create: skills/sillage/agents/openai.yaml
+- Create: evals/sillage/evals.json
 - Modify: skills/README.md
 - Modify: plugins/sillage-workflow/skills/
 - Test: internal/skills/contract_test.go
@@ -134,7 +135,7 @@ docs/adr/0001-human-governed-portable-core.md.
   continue/resume/ship requests that can change a repository.
 - It reads project context, finds the active task, names the current status,
   and chooses one bounded next action.
-- It routes research to researching-with-evidence; it does not duplicate it.
+- It routes research to sillage:research; it does not duplicate it.
 - It outputs a compact state report: Status, Known, Missing, Decision, Next
   action, and Evidence needed.
 
@@ -187,7 +188,7 @@ docs/adr/0001-human-governed-portable-core.md.
 - Modify: internal/workflow/state.go
 - Modify: internal/project/context.go
 - Modify: cmd/sillage/main.go
-- Modify: skills/working-with-sillage/SKILL.md
+- Modify: skills/sillage/SKILL.md
 - Create: docs/engineering/adapters/codex.md
 - Test: internal/workflow/state_test.go
 - Test: internal/project/context_test.go

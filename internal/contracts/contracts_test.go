@@ -72,7 +72,15 @@ func TestPluginBundleMatchesCanonicalSkill(t *testing.T) {
 	t.Parallel()
 
 	root := repositoryRoot(t)
-	for _, skill := range []string{"researching-with-evidence", "working-with-sillage"} {
+	entries, err := os.ReadDir(filepath.Join(root, "skills"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		skill := entry.Name()
 		for _, relative := range []string{"SKILL.md", "agents/openai.yaml"} {
 			canonical, err := os.ReadFile(filepath.Join(root, "skills", skill, relative))
 			if err != nil {

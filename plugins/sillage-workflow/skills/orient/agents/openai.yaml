@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / orient"
+  short_description: "Sillage guidance for orient"
+  default_prompt: "Use $orient for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

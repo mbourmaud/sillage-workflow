@@ -14,38 +14,38 @@ owners: [maintainers]
 - Public task and project schemas.
 - First research-skill candidate with evaluation fixtures.
 
-## Full workflow kernel (pilot-ready)
+## Skills-first V1 (pilot-ready)
 
 - Deterministic cold-start and task-status views.
 - Explicit, atomic local transition writes with optimistic concurrency checks.
 - Decision-bound review and handoff artifacts.
-- One orchestration skill that routes research and preserves human gates.
+- One implicit orchestration skill that routes the lifecycle and preserves
+  human gates.
+- Small phase skills for orientation, shaping, slicing, building, proving,
+  review, and handoff.
+- Focused SOLID, DDD, frontend, relational-data, and document-data lenses.
+- Language-neutral architecture, testing, interface, systems, security, and
+  platform lenses, with progressive loading and one primary owner per risk.
+- Maintenance lenses for audit, migration, debugging, and test hygiene.
 - Provider-neutral execution profiles for stage-specific capability and effort.
 - Provider-neutral delegation requests for bounded child-agent work, with
   parent-owned synthesis and human gates.
 - An executable end-to-end pilot without merge, deployment, or external writes.
 
-The kernel is exercised by `make pilot` before it is promoted to a release.
-The orchestration skill remains a candidate until an independent baseline run
-and human review are recorded; this is a release gate, not a missing runtime
-capability.
+The skills are exercised through the eval prompts and a real host pilot before
+being called mature. The optional CLI pilot remains a deterministic reference
+check, not a prerequisite for a project using the Markdown protocol.
 
 ## Next capabilities
 
 Each capability is developed and evaluated independently:
 
-1. Entering and resuming a worktree.
-2. Shaping and investigating work.
-3. Slicing approved work into independent review units.
-4. Binding clean workspaces without assuming Git.
-5. Planning risks, acceptance, tests, and runtime evidence.
-6. Implementing with focused tests.
-7. Designing and cleaning test evidence.
-8. Separating verification from review.
-9. Producing resumable handoffs.
-10. Adapter mappings, usage receipts, and budget enforcement for execution
+1. Adapter mappings, usage receipts, and budget enforcement for execution
     profiles and delegation requests.
-11. Local, GitHub, GitLab, and other task-store adapters.
+2. Local, GitHub, GitLab, and other task-store adapters.
+3. Mature evaluation runs across hosts and languages.
+4. Comparative end-to-end evaluations for shaping, implementation, proof,
+   review, recovery, and bounded delegation.
 
 The roadmap describes intended capability, not committed behavior. Released
 commands and skills remain the authoritative product surface.

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / ddd"
+  short_description: "Sillage domain modeling guidance"
+  default_prompt: "Use $ddd for a bounded Sillage domain decision."
+policy:
+  allow_implicit_invocation: true

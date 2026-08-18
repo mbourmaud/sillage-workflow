@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage"
+  short_description: "Guide small, evidence-backed, resumable engineering work"
+  default_prompt: "Use $sillage to route this material task through one small, evidence-backed slice."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / Research"
+  short_description: "Research version-sensitive questions with traceable evidence"
+  default_prompt: "Use $research to answer a version-sensitive question with an evidence packet."
+policy:
+  allow_implicit_invocation: true

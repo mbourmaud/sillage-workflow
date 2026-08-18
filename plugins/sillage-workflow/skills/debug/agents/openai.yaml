@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / debug"
+  short_description: "Sillage guidance for debug"
+  default_prompt: "Use $debug for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true
