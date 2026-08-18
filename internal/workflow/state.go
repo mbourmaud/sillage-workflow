@@ -94,19 +94,23 @@ type Handoff struct {
 
 // Task contains the portable state needed to validate lifecycle transitions.
 type Task struct {
-	ID         string                `json:"id"`
-	Title      string                `json:"title"`
-	Status     Status                `json:"status"`
-	Intent     Intent                `json:"intent"`
-	Execution  *ExecutionPlan        `json:"execution,omitempty"`
-	Delegation *DelegationPlan       `json:"delegation,omitempty"`
-	Decisions  []Decision            `json:"decisions,omitempty"`
-	Acceptance []AcceptanceCriterion `json:"acceptance"`
-	Slices     []Slice               `json:"slices"`
-	Approval   *Approval             `json:"approval,omitempty"`
-	Blocked    *Blocker              `json:"blocked,omitempty"`
-	Review     *Review               `json:"review,omitempty"`
-	Handoff    *Handoff              `json:"handoff,omitempty"`
+	ID              string                `json:"id"`
+	Title           string                `json:"title"`
+	Status          Status                `json:"status"`
+	Intent          Intent                `json:"intent"`
+	Classification  string                `json:"classification,omitempty"`
+	PrimaryLens     string                `json:"primary_lens,omitempty"`
+	SecondaryLenses []string              `json:"secondary_lenses,omitempty"`
+	RiskOwners      map[string]string     `json:"risk_owners,omitempty"`
+	Execution       *ExecutionPlan        `json:"execution,omitempty"`
+	Delegation      *DelegationPlan       `json:"delegation,omitempty"`
+	Decisions       []Decision            `json:"decisions,omitempty"`
+	Acceptance      []AcceptanceCriterion `json:"acceptance"`
+	Slices          []Slice               `json:"slices"`
+	Approval        *Approval             `json:"approval,omitempty"`
+	Blocked         *Blocker              `json:"blocked,omitempty"`
+	Review          *Review               `json:"review,omitempty"`
+	Handoff         *Handoff              `json:"handoff,omitempty"`
 }
 
 // Intent bounds the approved outcome and exclusions of a task.
@@ -328,11 +332,18 @@ func DecisionDigest(task Task) string {
 		At       string `json:"at"`
 	}
 	payload := struct {
-		Intent     Intent      `json:"intent"`
-		Decisions  []decision  `json:"decisions,omitempty"`
-		Acceptance []criterion `json:"acceptance"`
-		Slices     []slice     `json:"slices"`
-	}{Intent: task.Intent}
+		Intent          Intent            `json:"intent"`
+		Classification  string            `json:"classification,omitempty"`
+		PrimaryLens     string            `json:"primary_lens,omitempty"`
+		SecondaryLenses []string          `json:"secondary_lenses,omitempty"`
+		RiskOwners      map[string]string `json:"risk_owners,omitempty"`
+		Decisions       []decision        `json:"decisions,omitempty"`
+		Acceptance      []criterion       `json:"acceptance"`
+		Slices          []slice           `json:"slices"`
+	}{
+		Intent: task.Intent, Classification: task.Classification, PrimaryLens: task.PrimaryLens,
+		SecondaryLenses: task.SecondaryLenses, RiskOwners: task.RiskOwners,
+	}
 	for _, item := range task.Decisions {
 		payload.Decisions = append(payload.Decisions, decision{item.ID, item.Question, item.Answer, item.Status, item.By, item.At})
 	}

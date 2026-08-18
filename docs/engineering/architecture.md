@@ -20,6 +20,11 @@ Sillage has four layers:
    verification commands, agent capability/effort mappings, and publication
    mechanisms.
 
+The optional conformance adapter makes the engineering context explicit without
+changing the lifecycle: a task declares its classification, one owning lens,
+distinct secondary lenses where needed, and a proof or review owner for each
+acceptance criterion. Its report is deterministic and does not grant approval.
+
 The protocol works with Markdown skills and the project's native commands. The
 CLI, schemas, and task store are optional deterministic adapters. An adapter may
 add capability but cannot weaken the authority model silently.

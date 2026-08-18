@@ -1,0 +1,39 @@
+{
+  "id": "conformance-001",
+  "title": "Expose a portable task conformance check",
+  "status": "DECIDE",
+  "intent": {
+    "outcome": "A task records its engineering context and assigns every acceptance risk to an owning proof layer.",
+    "scope": [
+      "Classify the task as one bounded vertical",
+      "Name an interface lens and a systems secondary lens",
+      "Assign a test owner to the acceptance criterion"
+    ],
+    "non_goals": [
+      "Choose a programming language or framework",
+      "Merge, deploy, or publish changes"
+    ]
+  },
+  "classification": "bounded",
+  "primary_lens": "interface",
+  "secondary_lenses": ["systems"],
+  "risk_owners": {
+    "AC-1": "integration-test"
+  },
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "statement": "The conformance command reports a clean machine-readable report for this task.",
+      "risk": "An incomplete task context could hide the owner of an important engineering risk."
+    }
+  ],
+  "slices": [
+    {
+      "id": "conformance",
+      "title": "Task context conformance",
+      "status": "planned",
+      "acceptance": ["AC-1"],
+      "dependencies": []
+    }
+  ]
+}

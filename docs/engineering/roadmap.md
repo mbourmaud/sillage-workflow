@@ -38,6 +38,8 @@ check, not a prerequisite for a project using the Markdown protocol.
 
 ## Next capabilities
 
+- Deterministic task conformance for engineering context and risk ownership.
+
 Each capability is developed and evaluated independently:
 
 1. Adapter mappings, usage receipts, and budget enforcement for execution

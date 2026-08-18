@@ -28,6 +28,7 @@ pilot:
 	 cp examples/full-workflow/task.json "$$task_file"; \
 	 go run ./cmd/sillage doctor --root . --json; \
 	 go run ./cmd/sillage context --root . --task examples/full-workflow/task.json --json; \
+	 go run ./cmd/sillage conformance --task examples/conformance/task.json --json; \
 	 go run ./cmd/sillage status --task "$$task_file" --json; \
 	 go run ./cmd/sillage transition --task "$$task_file" --to HANDOFF --write --json; \
 	 go run ./cmd/sillage status --task "$$task_file" --json

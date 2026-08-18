@@ -6,6 +6,13 @@ All notable changes to Sillage are documented here. This project follows
 
 ## [Unreleased]
 
+### Added
+
+- Deterministic task engineering context with classification, owning and
+  secondary lenses, and one risk owner per acceptance criterion.
+- Optional `sillage conformance --task task.json` validation with stable JSON
+  findings and a reference task fixture.
+
 ## [0.2.0] - 2026-08-18
 
 ### Added
