@@ -37,6 +37,8 @@ func run(args []string, stdout io.Writer, stderr io.Writer) int {
 		return runChangelog(args[1:], stdout, stderr)
 	case "digest":
 		return runDigest(args[1:], stdout, stderr)
+	case "conformance":
+		return runConformance(args[1:], stdout, stderr)
 	case "transition":
 		return runTransition(args[1:], stdout, stderr)
 	case "version":
@@ -289,6 +291,46 @@ func runDigest(args []string, stdout io.Writer, stderr io.Writer) int {
 	return 0
 }
 
+func runConformance(args []string, stdout io.Writer, stderr io.Writer) int {
+	flags := flag.NewFlagSet("conformance", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	taskPath := flags.String("task", "", "task JSON path")
+	jsonOutput := flags.Bool("json", false, "print JSON")
+	if err := flags.Parse(args); err != nil {
+		return 2
+	}
+	if *taskPath == "" {
+		fmt.Fprintln(stderr, "conformance requires --task")
+		return 2
+	}
+	task, err := readTask(*taskPath)
+	if err != nil {
+		fmt.Fprintln(stderr, err)
+		return 2
+	}
+	report := workflow.Conformance(task)
+	if *jsonOutput {
+		if err := json.NewEncoder(stdout).Encode(report); err != nil {
+			fmt.Fprintln(stderr, err)
+			return 2
+		}
+	} else if report.OK {
+		fmt.Fprintln(stdout, "conformance: ready")
+	} else {
+		for _, finding := range report.Findings {
+			if finding.Path == "" {
+				fmt.Fprintf(stdout, "%s: %s\n", finding.Code, finding.Detail)
+				continue
+			}
+			fmt.Fprintf(stdout, "%s (%s): %s\n", finding.Code, finding.Path, finding.Detail)
+		}
+	}
+	if !report.OK {
+		return 1
+	}
+	return 0
+}
+
 func readTask(path string) (workflow.Task, error) {
 	task, _, err := readTaskFile(path)
 	return task, err
@@ -335,5 +377,5 @@ func printDelegation(writer io.Writer, request *workflow.DelegationRequest) {
 }
 
 func printUsage(writer io.Writer) {
-	fmt.Fprintln(writer, "usage: sillage <doctor|context|status|changelog|digest|transition|version>")
+	fmt.Fprintln(writer, "usage: sillage <doctor|context|status|changelog|digest|conformance|transition|version>")
 }

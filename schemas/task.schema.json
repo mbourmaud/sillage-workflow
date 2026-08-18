@@ -18,6 +18,17 @@
       },
       "additionalProperties": false
     },
+    "classification": { "enum": ["probe", "bounded", "cross-cutting"] },
+    "primary_lens": { "$ref": "#/$defs/lens" },
+    "secondary_lenses": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/lens" }
+    },
+    "risk_owners": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/non_blank" }
+    },
     "execution": { "$ref": "#/$defs/execution_plan" },
     "delegation": { "$ref": "#/$defs/delegation_plan" },
     "decisions": {
@@ -81,6 +92,14 @@
   "$defs": {
     "non_blank": { "type": "string", "pattern": "\\S" },
     "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "lens": {
+      "enum": [
+        "none", "architecture", "testing", "ddd", "solid", "interface",
+        "systems", "security", "platform", "frontend-architecture",
+        "relational-data", "document-data", "audit", "migrate", "debug",
+        "test-hygiene"
+      ]
+    },
     "execution_plan": {
       "type": "object",
       "required": ["default"],

@@ -153,8 +153,15 @@ are useful reference adapters, not a prerequisite for the skills:
 ```sh
 go run ./cmd/sillage doctor --root .
 go run ./cmd/sillage status --task task.json
+go run ./cmd/sillage conformance --task task.json --json
 go run ./cmd/sillage transition --task task.json --to VERIFY
 ```
+
+`conformance` is the stricter opt-in check for a task that is ready to enter
+engineering work: it requires a `probe`, `bounded`, or `cross-cutting`
+classification, one primary lens, optional distinct secondary lenses, and a
+named owning test or review layer for every acceptance criterion. Existing
+0.2 task records remain valid without these optional fields.
 
 Use the project's native test, typecheck, build, linter, screenshot, runtime,
 and domain checks as the source of verification evidence.

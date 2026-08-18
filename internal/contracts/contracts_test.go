@@ -40,6 +40,7 @@ func TestPublishedJSONContractsAcceptRepositoryExamples(t *testing.T) {
 		{"local project profile", "schemas/project.schema.json", "examples/local/project.json"},
 		{"pilot task", "schemas/task.schema.json", "examples/pilot/task.json"},
 		{"full workflow task", "schemas/task.schema.json", "examples/full-workflow/task.json"},
+		{"conformance task", "schemas/task.schema.json", "examples/conformance/task.json"},
 		{"agent plugin", "schemas/vendor/agent-plugins/1.0.0/plugin.schema.json", "plugin.json"},
 	}
 	for _, test := range tests {

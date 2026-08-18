@@ -31,6 +31,72 @@ func TestDoctorPrintsMachineReadableReport(t *testing.T) {
 	}
 }
 
+func TestConformancePrintsMachineReadableReportAndRejectsMissingContext(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	taskPath := filepath.Join(dir, "task.json")
+	task := workflow.Task{
+		ID: "task-1", Title: "Test", Status: workflow.StatusIntake,
+		Intent:     workflow.Intent{Outcome: "ship", Scope: []string{"core"}, NonGoals: []string{}},
+		Acceptance: []workflow.AcceptanceCriterion{{ID: "AC-1", Statement: "works", Risk: "regression"}},
+		Slices:     []workflow.Slice{{ID: "core", Title: "Core", Status: "active", Acceptance: []string{"AC-1"}, Dependencies: []string{}}},
+	}
+	encoded, err := json.Marshal(task)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(taskPath, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	var stdout bytes.Buffer
+	if exitCode := run([]string{"conformance", "--task", taskPath, "--json"}, &stdout, &stdout); exitCode != 1 {
+		t.Fatalf("expected conformance failure, got %d: %s", exitCode, stdout.String())
+	}
+	var report workflow.ConformanceReport
+	if err := json.Unmarshal(stdout.Bytes(), &report); err != nil {
+		t.Fatalf("expected JSON conformance report: %v\n%s", err, stdout.String())
+	}
+	if report.OK || len(report.Findings) == 0 {
+		t.Fatalf("expected findings for missing context, got %#v", report)
+	}
+}
+
+func TestConformanceAcceptsCompleteTask(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	taskPath := filepath.Join(dir, "task.json")
+	task := workflow.Task{
+		ID: "task-1", Title: "Test", Status: workflow.StatusIntake,
+		Intent:         workflow.Intent{Outcome: "ship", Scope: []string{"core"}, NonGoals: []string{}},
+		Classification: "bounded", PrimaryLens: "interface",
+		SecondaryLenses: []string{"systems"}, RiskOwners: map[string]string{"AC-1": "integration-test"},
+		Acceptance: []workflow.AcceptanceCriterion{{ID: "AC-1", Statement: "works", Risk: "regression"}},
+		Slices:     []workflow.Slice{{ID: "core", Title: "Core", Status: "active", Acceptance: []string{"AC-1"}, Dependencies: []string{}}},
+	}
+	encoded, err := json.Marshal(task)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(taskPath, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	var stdout bytes.Buffer
+	if exitCode := run([]string{"conformance", "--task", taskPath, "--json"}, &stdout, &stdout); exitCode != 0 {
+		t.Fatalf("expected complete task to conform, got %d: %s", exitCode, stdout.String())
+	}
+	var report workflow.ConformanceReport
+	if err := json.Unmarshal(stdout.Bytes(), &report); err != nil {
+		t.Fatalf("expected JSON conformance report: %v\n%s", err, stdout.String())
+	}
+	if !report.OK || len(report.Findings) != 0 {
+		t.Fatalf("expected clean conformance report, got %#v", report)
+	}
+}
+
 func TestTransitionValidatesTaskFileWithoutMutatingIt(t *testing.T) {
 	t.Parallel()
 

@@ -31,6 +31,13 @@ owners: [maintainers]
 - **Specialist Lens** — a focused skill such as SOLID, DDD, frontend, data,
   audit, migration, debugging, or test hygiene. It informs the current phase
   and never creates a second lifecycle.
+- **Task Classification** — the bounded context of the work: `probe`,
+  `bounded`, or `cross-cutting`.
+- **Primary Lens** — the one engineering lens that owns the task's dominant
+  risk. Secondary lenses are allowed only for distinct additional risks.
+- **Risk Owner** — the test or review layer that owns proof for one Acceptance
+  Criterion. Every criterion has at most one primary owner in a conforming
+  task.
 - **Engineering Doctrine** — portable questions that apply across technology:
   observed pressure, ownership, seams, dependency direction, behavior,
   failure, security, compatibility, recovery, and proof.
@@ -65,10 +72,10 @@ owners: [maintainers]
   its parent. It is an input to review and verification, not approval or
   evidence until the normal Sillage gates accept it.
 - **Decision Digest** — the lowercase SHA-256 of canonical JSON containing the
-  Task intent, acceptance criterion identities/statements/risks, and Slice
-  identities/titles/acceptance/dependencies. Operational status, evidence,
-  execution profiles, evidence, waivers, approvals, and blockers do not change
-  it.
+  Task intent, engineering context, acceptance criterion identities/statements/
+  risks, and Slice identities/titles/acceptance/dependencies. Operational
+  status, evidence, execution profiles, waivers, approvals, and blockers do
+  not change it.
 - **Waiver** — explicit human acceptance of missing required evidence and its
   residual risk. Like evidence, it is invalidated when the decision digest
   changes.

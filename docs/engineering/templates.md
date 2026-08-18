@@ -30,8 +30,10 @@ Status: INTAKE
 
 ### Engineering lenses
 - Primary risk lens: <architecture | testing | ddd | interface | systems |
-  security | platform | frontend | relational-data | document-data | none>
+  security | platform | frontend-architecture | relational-data |
+  document-data | audit | migrate | debug | test-hygiene | none>
 - Secondary lenses: <only when a distinct risk needs them>
+- Risk owners: <acceptance ID → owning test or review layer>
 
 ### Acceptance
 - [ ] <observable criterion> (risk: <what could be wrong>)
