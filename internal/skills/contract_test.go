@@ -65,10 +65,12 @@ func TestEveryPublishedSkillHasValidPortableFrontmatter(t *testing.T) {
 func TestResearchSkillHasPortableContract(t *testing.T) {
 	t.Parallel()
 
-	content := readSkill(t, "researching-with-evidence")
+	content := readSkill(t, "research")
 	required := []string{
-		"name: researching-with-evidence",
-		"description: Use when",
+		"name: research",
+		"description: Use automatically when",
+		"namespace: sillage",
+		"qualified-name: \"sillage:research\"",
 		"task record",
 		"primary sources",
 		"durable knowledge",
@@ -91,7 +93,7 @@ func TestResearchSkillHasPortableContract(t *testing.T) {
 func TestWorkflowSkillHasPortableLifecycleContract(t *testing.T) {
 	t.Parallel()
 
-	content := readSkill(t, "working-with-sillage")
+	content := readSkill(t, "sillage")
 	normalized := strings.Join(strings.Fields(content), " ")
 	required := []string{
 		"INTAKE",
@@ -102,20 +104,32 @@ func TestWorkflowSkillHasPortableLifecycleContract(t *testing.T) {
 		"REVIEW",
 		"HANDOFF",
 		"BLOCKED",
-		"one small task",
-		"one dedicated worktree",
+		"name: sillage",
+		"namespace: sillage",
+		"qualified-name: sillage",
+		"one small",
+		"clean worktree",
 		"decision digest",
-		"researching-with-evidence",
+		"research",
 		"Never declare success from code inspection alone",
-		"execution plan",
 		"capability",
 		"effort",
 		"fallback",
-		"delegation plan",
+		"Delegation",
 		"subagent",
-		"isolated_worktree",
+		"isolated",
 		"return shape",
 		"human",
+		"optional reference tooling",
+		"Engineering doctrine",
+		"one primary lens per risk",
+		"External skills",
+		"sillage:architecture",
+		"sillage:testing",
+		"sillage:interface",
+		"sillage:systems",
+		"sillage:security",
+		"sillage:platform",
 	}
 	for _, phrase := range required {
 		if !strings.Contains(normalized, phrase) {
@@ -126,6 +140,85 @@ func TestWorkflowSkillHasPortableLifecycleContract(t *testing.T) {
 	for _, phrase := range forbidden {
 		if strings.Contains(content, phrase) {
 			t.Errorf("workflow skill contains competing workflow reference %q", phrase)
+		}
+	}
+}
+
+func TestEveryPublishedSkillAllowsImplicitInvocation(t *testing.T) {
+	t.Parallel()
+
+	root := skillsRoot(t)
+	entries, err := os.ReadDir(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		t.Run(entry.Name(), func(t *testing.T) {
+			yaml, err := os.ReadFile(filepath.Join(root, entry.Name(), "agents", "openai.yaml"))
+			if err != nil {
+				t.Fatalf("implicit invocation metadata is required: %v", err)
+			}
+			if !strings.Contains(string(yaml), "allow_implicit_invocation: true") {
+				t.Fatal("published skills must permit host-driven implicit invocation")
+			}
+		})
+	}
+}
+
+func TestSpecialistSkillsCarryPragmaticContracts(t *testing.T) {
+	t.Parallel()
+
+	required := map[string][]string{
+		"architecture":          {"Pressure", "Boundary", "Option", "Cost", "Proof", "patterns", "Clean Architecture"},
+		"testing":               {"Behavior", "Risk", "Seam", "Owner", "Proof", "failing test", "tautology"},
+		"solid":                 {"Single Responsibility", "Open/Closed", "Liskov Substitution", "Interface Segregation", "Dependency Inversion", "KISS", "DRY", "YAGNI", "Demeter", "GRASP", "MoSCoW", "Clean Architecture", "pragmatically"},
+		"ddd":                   {"ubiquitous language", "bounded contexts", "aggregates", "invariants", "domain core"},
+		"interface":             {"Consumer", "Contract", "Boundary", "Failure", "Evolution", "HTTP", "compatibility"},
+		"systems":               {"Failure domain", "Guarantee", "Timing", "Recovery", "Limits", "backpressure"},
+		"security":              {"Asset", "Threat", "Boundary", "Control", "Residual risk", "least privilege"},
+		"platform":              {"Environment", "Constraint", "Boundary", "Failure/recovery", "Proof", "desktop"},
+		"frontend-architecture": {"loading", "empty", "success", "error", "Accessibility", "Browser proof"},
+		"relational-data":       {"constraints", "transactions", "indexes", "Migration", "rollback"},
+		"document-data":         {"access patterns", "Schema", "Consistency", "partition", "reconciliation"},
+		"audit":                 {"Observed", "Risk", "Unknown", "Remediate", "Proof"},
+		"migrate":               {"Current", "Target", "Compatibility", "Rollback", "Proof per stage"},
+		"debug":                 {"Reproduction", "Facts", "Hypotheses", "Cause", "regression test"},
+		"test-hygiene":          {"primary owning layer", "duplicates", "flaky", "coverage", "Runtime cost"},
+	}
+	for name, phrases := range required {
+		name, phrases := name, phrases
+		t.Run(name, func(t *testing.T) {
+			content := strings.ToLower(readSkill(t, name))
+			for _, phrase := range phrases {
+				if !strings.Contains(content, strings.ToLower(phrase)) {
+					t.Errorf("specialist skill is missing %q", phrase)
+				}
+			}
+		})
+	}
+}
+
+func TestUsingSillageHasSimpleEntryContract(t *testing.T) {
+	t.Parallel()
+
+	content := strings.Join(strings.Fields(readSkill(t, "using-sillage")), " ")
+	for _, phrase := range []string{
+		"name: using-sillage",
+		"$using-sillage",
+		"three-line start",
+		"PRODUCT.md",
+		"docs/domain/index.md",
+		"state card",
+		"sillage:orient",
+		"sillage:shape",
+		"optional",
+		"Do not implement",
+	} {
+		if !strings.Contains(content, phrase) {
+			t.Errorf("using-sillage entry contract is missing %q", phrase)
 		}
 	}
 }

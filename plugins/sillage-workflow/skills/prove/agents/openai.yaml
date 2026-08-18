@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / prove"
+  short_description: "Sillage guidance for prove"
+  default_prompt: "Use $prove for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

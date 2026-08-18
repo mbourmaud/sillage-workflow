@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / Platform"
+  short_description: "Model desktop, CLI, service, and OS boundaries"
+  default_prompt: "Use $platform for runtime, process, desktop, mobile, or packaging concerns."
+policy:
+  allow_implicit_invocation: true

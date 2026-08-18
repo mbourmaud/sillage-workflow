@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / Interfaces"
+  short_description: "Design portable HTTP, web, and protocol contracts"
+  default_prompt: "Use $interface for an API, web, HTTP, RPC, or message boundary."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / frontend-architecture"
+  short_description: "Sillage guidance for frontend-architecture"
+  default_prompt: "Use $frontend-architecture for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

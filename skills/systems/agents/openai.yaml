@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / Systems"
+  short_description: "Handle concurrency, networks, timing, and failure"
+  default_prompt: "Use $systems for distributed, concurrent, or resource-bound behavior."
+policy:
+  allow_implicit_invocation: true

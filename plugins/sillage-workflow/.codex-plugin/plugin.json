@@ -7,12 +7,15 @@
   "interface": {
     "displayName": "Sillage",
     "shortDescription": "Small, resumable, evidence-backed agent work",
-    "longDescription": "Sillage keeps agent work small, decisions human-governed, state resumable, and completion claims backed by evidence.",
+    "longDescription": "Sillage keeps agent work small, decisions human-governed, state resumable, and completion claims backed by evidence. Its language-neutral engineering lenses cover architecture, testing, DDD, interfaces, systems, security, and platform boundaries without imposing a stack.",
     "developerName": "Sillage",
     "category": "Developer Tools",
     "capabilities": [
-      "Guide bounded, resumable engineering work",
+      "Start a fresh conversation with a compact project state card",
+      "Route bounded, resumable engineering work",
+      "Shape, slice, build, prove, review, and hand off one vertical",
       "Research with source authority and explicit evidence",
+      "Apply language-neutral architecture, testing, SOLID, DDD, interface, systems, security, platform, frontend, and data lenses",
       "Recommend provider-neutral reasoning capability and effort per stage",
       "Route bounded work to a parent or subagent with explicit isolation"
     ],

@@ -1,35 +1,41 @@
 # Sillage
 
-Sillage is a human-governed engineering workflow for coding agents. It keeps
-work small, state resumable, decisions explicit, and completion claims backed
-by evidence without requiring a particular language, forge, task tracker, or
-CI provider.
+Sillage is a skills-first engineering workflow for coding agents. It keeps
+work small, decisions human-owned, context resumable, and completion claims
+backed by observable evidence — without turning a repository into a diary.
 
-**[Visit the Sillage website](https://mbourmaud.github.io/sillage-workflow/)**
-for the visual protocol guide, installation paths, and release notes.
+**[Read the Sillage guide](https://mbourmaud.github.io/sillage-workflow/)** for
+the visual protocol, installation paths, and changelog.
 
-Sillage combines:
+## The idea
 
-- portable Agent Skills for judgment;
-- an Agent Plugins 1.0 distribution manifest;
-- JSON contracts for tasks, slices, projects, and worktrees;
-- a standalone Go CLI for deterministic checks;
-- project profiles that bind the protocol to local tools;
-- provider-neutral execution profiles that match capability and effort to each
-  stage;
-- an OKF-inspired durable knowledge model.
+The agent should be able to enter a fresh worktree and answer: what is this
+project, what language does its domain use, what task is active, what decision
+was accepted, and what is the next safe action? The reviewer should be able to
+summarize a vertical without reading hundreds of lines of plans or tests.
 
-## Status
+Sillage provides one implicit router and small composable skills:
 
-Sillage is pre-1.0. Version 0.2.0 adds the full workflow kernel, provider-neutral
-execution profiles, and bounded delegation requests while preserving the
-human-governed protocol. Interfaces may evolve as the workflow is exercised on
-real projects.
+```text
+orient → shape → slice → build → prove → review → handoff
+             ↘ research and specialist lenses ↗
+```
 
-## Install Sillage 0.2.0
+The lifecycle remains:
 
-The release ships one canonical Agent Skill through several thin
-distribution adapters. None of these commands installs the optional Go CLI.
+```text
+INTAKE → INVESTIGATE → DECIDE → IMPLEMENT → VERIFY → REVIEW → HANDOFF
+```
+
+`BLOCKED` is a resumable state with an explicit condition and resume status.
+Product decisions, scope changes, destructive actions, evidence waivers,
+external writes, merges, releases, and deployments remain human-owned.
+
+## Install the skills
+
+The portable product is `SKILL.md` plus compact Markdown task records. The
+Sillage CLI, JSON schemas, task store, Git provider, and plugin host are
+optional adapters; a project can use its own commands and files.
 
 ### Codex
 
@@ -47,204 +53,129 @@ claude plugin install sillage-workflow@sillage
 
 ### Any Agent Skills client
 
-The `skills` CLI supports Claude Code, Codex, Cursor, OpenCode, GitHub Copilot,
-and many other clients. Install from GitHub and name one or more agents explicitly:
+Install the complete suite, or select only the skills a project needs:
 
 ```sh
 npx skills add mbourmaud/sillage-workflow \
-  --skill researching-with-evidence \
-  --agent claude-code --agent codex
+  --skill using-sillage --skill sillage --skill orient --skill shape --skill slice \
+  --skill build --skill prove --skill review --skill handoff \
+  --skill research --skill architecture --skill testing --skill solid --skill ddd \
+  --skill interface --skill systems --skill security --skill platform \
+  --skill frontend-architecture --skill relational-data --skill document-data \
+  --skill audit --skill migrate --skill debug --skill test-hygiene
 ```
 
-### Full Sillage workflow
+The host may invoke skills implicitly from their descriptions. You can still
+call one explicitly as `$sillage:review` or `$sillage:ddd` when you want a
+focused lens. The host decides whether implicit invocation is supported; the
+workflow remains useful when you describe the desired stage in ordinary words.
 
-Install the orchestration skill when you want the complete lifecycle rather
-than the research capability alone:
+### Start a task
 
-```sh
-npx skills add mbourmaud/sillage-workflow \
-  --skill working-with-sillage \
-  --global --agent codex --yes
-```
-
-The skill is usable for pilots and is still marked as a workflow candidate
-until its first independent evaluation is completed.
-
-### Updating
-
-Skills do not update in the background. Update them deliberately at a task
-boundary, then run the project's own checks:
-
-```sh
-npx skills update working-with-sillage --global --yes
-make check
-```
-
-This updates agent guidance only. It does not update Sillage's repository
-schemas, CLI, or project documents; those arrive through the normal repository
-release process.
-
-### First behavior test
-
-Start a fresh agent task, then ask:
+In a fresh conversation, use the simple entry command:
 
 ```text
-Use the researching-with-evidence skill. Determine whether Agent Plugins 1.0
-replaces Agent Skills or packages them. Use primary sources, distinguish facts
-from inference, and return an evidence packet without creating repository docs.
+$using-sillage
 ```
 
-The expected result names the skill, states the research question and consumer,
-uses current primary sources with dates or versions, distinguishes inference
-and unknowns, and proposes no durable document unless one has a clear owner.
-Remove a marketplace installation with the matching client:
+Or say “start Sillage” / “démarre Sillage”. The entry skill reads the minimal
+project context, returns a short state card, and hands off to the right phase.
+It does not implement or create a documentation pile during the handshake.
+
+Update deliberately at a task boundary and run the project's own checks:
 
 ```sh
-codex plugin remove sillage-workflow@sillage
-codex plugin marketplace remove sillage
-
-claude plugin uninstall sillage-workflow@sillage
-claude plugin marketplace remove sillage
+npx skills update sillage-workflow --global --yes
 ```
 
-## Core lifecycle
+Skill updates change agent guidance only. They do not update project documents,
+schemas, or the optional CLI.
 
-```text
-INTAKE → INVESTIGATE → DECIDE → IMPLEMENT → VERIFY → REVIEW → HANDOFF
-```
+## What the skills do
 
-`BLOCKED` is reachable from every state. Product decisions, scope changes,
-destructive actions, external writes, merges, deployments, and evidence waivers
-remain human decisions.
+| Skill | Use it for |
+| --- | --- |
+| `sillage` | The single implicit router and lifecycle authority |
+| `using-sillage` | Simple fresh-conversation entry point and state card |
+| `orient` | Fresh-worktree context and a concise state card |
+| `shape` | Goals, context, alternatives, decisions, and durable ADRs |
+| `slice` | One vertical, worktree, acceptance set, and stop condition |
+| `build` | One approved implementation with focused tests |
+| `prove` | Deterministic checks and evidence packets |
+| `review` | Independent, reviewer-sized quality assessment |
+| `handoff` | A compact, resumable outcome and next safe action |
+| `research` | Version-sensitive facts and source-traceable evidence |
+| `architecture` | Patterns, boundaries, dependency direction, and Clean Architecture questions |
+| `testing` | Behavioral seams, test ownership, red-green loops, and proof portfolios |
+| `solid` | Pragmatic SOLID, Clean Architecture, KISS, DRY, YAGNI, and GRASP boundaries |
+| `ddd` | Language, bounded contexts, invariants, and domain models |
+| `interface` | HTTP, web, RPC, message contracts, failure semantics, and compatibility |
+| `systems` | Networks, concurrency, timing, resources, queues, and partial failure |
+| `security` | Assets, trust boundaries, abuse cases, controls, and residual risk |
+| `platform` | Desktop, mobile, CLI, services, embedded, process, and packaging constraints |
+| `frontend-architecture` | UI states, route/data boundaries, accessibility, browser proof |
+| `relational-data` | Constraints, transactions, indexes, and safe migrations |
+| `document-data` | Access patterns, schema evolution, consistency, and reconciliation |
+| `audit` | Evidence-led codebase, architecture, legacy, and debt assessment |
+| `migrate` | Staged, compatible, observable migration paths |
+| `debug` | Reproducible diagnosis before a bounded fix |
+| `test-hygiene` | Smaller, clearer proof portfolios without losing risk coverage |
 
-Tasks may also carry an execution profile such as `standard/medium` for a
-bounded implementation or `advanced/high` for a difficult decision or
-independent review. These profiles do not name a model, grant permissions, or
-change the decision digest; an adapter maps them to the models available in its
-environment and must surface any fallback before affected evidence is trusted.
+Specialists are progressive lenses inside the same lifecycle. Sillage's
+engineering doctrine is immutable, but no lens mandates a language, framework,
+class model, pattern, test pyramid, or Clean Architecture. They do not create
+parallel statuses, duplicate plans, or authorize changes.
 
-For bounded work, a task may also request a `parent` or `subagent` delegation
-per stage. The request names a role, isolation (`read_only` or
-`isolated_worktree` for children), and return packet; it never names a model.
-The parent agent remains the orchestrator and human authority. A host such as
-Codex can map the request to a configured child thread; a host without that
-capability continues in the parent when the request is optional, or records a
-`BLOCKED` resume condition when it is required. Child output is reviewed by the
-parent before it becomes evidence or changes lifecycle state.
+## Markdown-first project setup
 
-## Project entry contract
-
-Sillage recommends four stable entry points:
+Keep the repository entry points small and stable:
 
 ```text
 PRODUCT.md
 DESIGN.md
 AGENTS.md
-CLAUDE.md -> AGENTS.md
+CLAUDE.md → AGENTS.md
 docs/domain/index.md
+docs/engineering/templates.md
 ```
 
-Names are configurable. Their responsibilities are not: product, experience,
-agent operating rules, and domain language must each have one canonical owner.
+For each vertical, keep one task card with a TL;DR, intent, decision, slice,
+acceptance/proof, review, and handoff. Store transient research, logs,
+screenshots, experiments, and discarded plans outside durable knowledge. Add
+an ADR only when a decision is durable and cross-cutting.
 
-## CLI
+## Optional reference CLI
 
-The CLI has no runtime dependency beyond its compiled binary.
+This repository includes a standalone Go CLI and JSON contracts for projects
+that want deterministic validation, profiles, or local task transitions. They
+are useful reference adapters, not a prerequisite for the skills:
 
 ```sh
-go run ./cmd/sillage doctor --root /path/to/project
-go run ./cmd/sillage context --root /path/to/project --task task.json --json
-go run ./cmd/sillage status --task task.json --json
-go run ./cmd/sillage changelog check --version v0.2.0
-go run ./cmd/sillage changelog extract --version v0.2.0
-go run ./cmd/sillage digest --task task.json
-go run ./cmd/sillage transition --task task.json --to IMPLEMENT
-go run ./cmd/sillage transition --task task.json --to IMPLEMENT --write
+go run ./cmd/sillage doctor --root .
+go run ./cmd/sillage status --task task.json
+go run ./cmd/sillage transition --task task.json --to VERIFY
 ```
 
-Commands validate and remain read-only by default. Only `transition --write`
-mutates a local task record, after validation and an optimistic-concurrency
-check; it does not grant approval.
-Approvals, evidence, and waivers carry a decision digest, so a later scope or
-plan change requires new human authority and new approval-bound verification.
-Projects that need temporal freshness can add that policy in their verification
-adapter; the portable core does not invent a universal age window.
+Use the project's native test, typecheck, build, linter, screenshot, runtime,
+and domain checks as the source of verification evidence.
 
-[`examples/pilot/task.json`](examples/pilot/task.json) is an executable,
-evidence-backed task record. Repository tests exercise it through the same CLI
-boundary used by adopters.
-
-## Agent Plugin
-
-The root [`plugin.json`](plugin.json) packages Sillage skills according to
-Agent Plugins 1.0. Codex and Claude Code marketplace manifests point to the same
-[`plugins/sillage-workflow`](plugins/sillage-workflow) bundle; contract tests
-keep its payload identical to the canonical source under `skills/` and its
-version aligned across ecosystems. Agent Plugins is a distribution adapter, not
-the Sillage runtime contract: the Go CLI, task schemas, and project documents
-remain independently usable. No MCP server is bundled until a concrete
-tool-server need exists.
-
-## Skills
-
-Install skills explicitly so projects do not inherit an
-overlapping workflow:
-
-```sh
-npx skills add mbourmaud/sillage-workflow --skill researching-with-evidence
-```
-
-See [skills/README.md](skills/README.md) for the released capability set.
-
-The `working-with-sillage` skill is the full workflow orchestrator: it guides
-cold start, one bounded slice, human decision gates, deterministic verification,
-independent review, blocked-task resumption, and handoff. It is accompanied by
-the executable pilot in [examples/full-workflow](examples/full-workflow).
-
-## Repository map
-
-```text
-cmd/sillage/          CLI
-internal/             deterministic workflow policies
-schemas/              portable JSON schemas
-skills/               original Agent Skills
-plugins/              generated multi-client distribution bundle
-evals/                behavioral evaluation prompts
-docs/domain/          Sillage's domain language
-docs/engineering/     current system documentation
-docs/adr/             landmark decisions
-examples/             forge- and language-neutral examples
-```
-
-## Development
+## Development and release
 
 ```sh
 make check
-make pilot
+make pilot       # optional CLI reference pilot
 ```
 
-The complete gate checks Go formatting, whitespace, `go vet`, GitHub Actions,
-the race-enabled test suite, JSON Schema examples, Agent Skill structure, and
-the Sillage project contract.
+`make check` validates Go code, contracts, all skill mirrors, changelog, site,
+and the project contract. Keep user-visible changes under `[Unreleased]` in
+[`CHANGELOG.md`](CHANGELOG.md), then run `make release-notes VERSION=vX.Y.Z`
+before a human-approved tag.
 
-`make pilot` runs the full local workflow example against a temporary task copy:
-it reads the project contract, reports context and status, performs the explicit
-`REVIEW → HANDOFF` write, and confirms the resulting handoff state. It never
-changes the canonical example or performs an external write.
+## Sources and license
 
-## Releases
-
-Keep user-visible changes in [`CHANGELOG.md`](CHANGELOG.md) under
-`[Unreleased]`. Before a human-approved tag, run:
-
-```sh
-make check
-make release-notes VERSION=vX.Y.Z
-```
-
-CI requires the matching version section and publishes those exact notes with
-the release.
-
-## License
-
-[MIT](LICENSE)
+Sillage is independently authored and MIT licensed. Its progressive,
+composable skill shape is informed by the [Agent Skills specification](https://agentskills.io/specification),
+[Matt Pocock's skills](https://github.com/mattpocock/skills), and established
+engineering practice. Names, prompts, lifecycle contracts, evidence rules,
+and human authority remain Sillage-owned; the attribution policy is in
+[`docs/engineering/provenance.md`](docs/engineering/provenance.md).

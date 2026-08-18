@@ -13,12 +13,16 @@ human review of qualitative results.
 5. Grade objective requirements and inspect qualitative output.
 6. Record the skill's maturity honestly.
 
-Do not batch untested skills. Mechanical constraints belong in the CLI or a
-schema rather than increasingly forceful prose.
+Do not batch untested skills. Keep the SKILL.md concise; mechanical constraints
+belong in the project's deterministic checks rather than increasingly forceful
+prose. A specialist must return an observable design/proof packet, not a
+catalogue of principles.
 
 ## Code changes
 
-Write a focused failing test before changing observable CLI or policy behavior.
+Write a focused failing test before changing observable CLI or policy behavior;
+for a Markdown-only skill, add an objective contract assertion or evaluation
+prompt before changing its guidance.
 
 ```sh
 make check

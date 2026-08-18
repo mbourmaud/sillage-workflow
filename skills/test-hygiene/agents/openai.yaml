@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / test-hygiene"
+  short_description: "Sillage guidance for test-hygiene"
+  default_prompt: "Use $test-hygiene for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / audit"
+  short_description: "Sillage guidance for audit"
+  default_prompt: "Use $audit for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

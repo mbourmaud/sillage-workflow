@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Install Sillage in Codex, Claude Code, or any Agent Skills compatible environment.">
-    <meta name="theme-color" content="#081b25">
+    <meta name="theme-color" content="#f5f0e0">
     <title>Install — Sillage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/styles.css">
     <script defer src="assets/site.js"></script>
   </head>
@@ -19,9 +22,9 @@
 
       <main>
         <section class="page-hero"><div class="container">
-          <p class="eyebrow">Start in a few minutes</p>
-          <h1>Bring a clean trail to your next worktree.</h1>
-          <p>Install the Sillage skill in the environment you already use. The repository workflow remains plain Markdown and JSON, so the protocol stays portable.</p>
+          <p class="eyebrow">Start at the next worktree</p>
+          <h1>Bring a clean trail to the work you <em>already do.</em></h1>
+          <p>Install the Sillage skills in the environment you use. The workflow itself remains plain Markdown and project-native checks, so no CLI is required.</p>
         </div></section>
 
         <section class="section"><div class="container content-grid">
@@ -36,30 +39,39 @@ codex plugin add sillage-workflow@sillage</code></pre></div>
 claude plugin install sillage-workflow@sillage</code></pre></div>
             </section>
 
-            <section id="workflow-skill"><h2>Full Sillage workflow</h2><p>For the complete lifecycle — cold start, bounded slices, human gates, verification, review, blocked resume, and handoff — install the orchestration skill explicitly.</p>
-              <div class="code-card"><button class="copy-button" type="button" data-copy="npx skills add mbourmaud/sillage-workflow --skill working-with-sillage --global --agent codex --yes">Copy</button><pre><code>npx skills add mbourmaud/sillage-workflow \
-  --skill working-with-sillage \
+            <section id="workflow-skill"><h2>The full Sillage workflow</h2><p>Install the router and the small phase skills together. Hosts that support implicit invocation can select the next skill from your ordinary language and the current task state.</p>
+              <div class="code-card"><button class="copy-button" type="button" data-copy="npx skills add mbourmaud/sillage-workflow --skill using-sillage --skill sillage --skill orient --skill shape --skill slice --skill build --skill prove --skill review --skill handoff --skill research --skill architecture --skill testing --skill solid --skill ddd --skill interface --skill systems --skill security --skill platform --skill frontend-architecture --skill relational-data --skill document-data --skill audit --skill migrate --skill debug --skill test-hygiene --global --agent codex --yes">Copy</button><pre><code>npx skills add mbourmaud/sillage-workflow \
+  --skill using-sillage --skill sillage --skill orient --skill shape --skill slice \
+  --skill build --skill prove --skill review --skill handoff \
+  --skill research --skill architecture --skill testing --skill solid --skill ddd \
+  --skill interface --skill systems --skill security --skill platform \
+  --skill frontend-architecture --skill relational-data --skill document-data \
+  --skill audit --skill migrate --skill debug --skill test-hygiene \
   --global --agent codex --yes</code></pre></div>
-              <p class="muted">This skill is available for real pilots and is still marked as a workflow candidate until its first independent evaluation is completed.</p>
+              <p class="muted">The skills give the agent the protocol. The project still owns its task card, decisions, native checks, and evidence.</p>
             </section>
 
-            <section id="skills"><h2>Agent Skills compatible tools</h2><p>For clients that consume the open Agent Skills layout directly, install only the skill you need.</p>
-              <div class="code-card"><button class="copy-button" type="button" data-copy="npx skills add mbourmaud/sillage-workflow --skill researching-with-evidence">Copy</button><pre><code>npx skills add mbourmaud/sillage-workflow --skill researching-with-evidence</code></pre></div>
-              <p class="muted">The research skill is deliberately useful on its own. The full workflow becomes active when the project also includes its AGENTS.md, project profile, and task records.</p>
+            <section id="skills"><h2>Choose a specialist lens</h2><p>Install a single portable skill when a project needs one discipline. The names stay short for hosts; the documentation qualifies them as Sillage skills.</p>
+              <div class="code-card"><button class="copy-button" type="button" data-copy="npx skills add mbourmaud/sillage-workflow --skill architecture --skill testing --skill ddd --skill solid --skill interface --skill systems --skill security --skill platform --skill frontend-architecture --skill relational-data --skill document-data">Copy</button><pre><code>npx skills add mbourmaud/sillage-workflow \
+  --skill architecture --skill testing --skill ddd --skill solid \
+  --skill interface --skill systems --skill security --skill platform \
+  --skill frontend-architecture \
+  --skill relational-data --skill document-data</code></pre></div>
+              <p class="muted">Research, audit, migration, debugging, test hygiene, and engineering lenses are available as short portable names. They remain lenses inside the same lifecycle, not parallel workflows.</p>
             </section>
 
             <section id="updates"><h2>Update deliberately</h2><p>Skills do not update in the background. Refresh an installed skill at a task boundary, review the change, and then run the project checks.</p>
-              <div class="code-card"><button class="copy-button" type="button" data-copy="npx skills update working-with-sillage --global --yes">Copy</button><pre><code>npx skills update working-with-sillage --global --yes</code></pre></div>
-              <p class="muted">Updating a skill changes agent guidance only. It does not update the repository’s task schemas, CLI, or project documents.</p>
+              <div class="code-card"><button class="copy-button" type="button" data-copy="npx skills update sillage --global --yes">Copy</button><pre><code>npx skills update sillage --global --yes</code></pre></div>
+              <p class="muted">Updating a skill changes agent guidance only. It does not update project documents, native checks, or the optional reference CLI.</p>
             </section>
 
-            <section id="first-task"><h2>Start the first task</h2><p>From the repository root, ask the agent to orient before it edits anything:</p>
-              <p class="notice">“Read the Sillage project contract and domain entry points. Show me the current status, the active task slice, and the single safest next action. Do not modify files yet.”</p>
-              <p>Then let the agent create or resume one small task. Product decisions, scope changes, destructive actions, merges, releases, and deployments remain yours.</p>
+            <section id="first-task"><h2>Start the first task</h2><p>From a fresh conversation, use <code>$using-sillage</code> or simply say “start Sillage”:</p>
+              <p class="notice">The entry skill reads the minimal project and domain context, returns a short state card, and hands off to the next phase. It does not modify files during the handshake.</p>
+              <p>Then let the agent create or resume one small Markdown task card. Product decisions, scope changes, destructive actions, merges, releases, and deployments remain yours.</p>
               <p><a class="light-link" href="workflow.html">Read the workflow stages →</a></p>
             </section>
           </div>
-          <aside class="toc" aria-label="On this page"><strong>Install paths</strong><a href="#codex">Codex</a><a href="#claude">Claude Code</a><a href="#workflow-skill">Full workflow</a><a href="#skills">Agent Skills</a><a href="#updates">Updates</a><a href="#first-task">First task</a></aside>
+          <aside class="toc" aria-label="On this page"><strong>Install paths</strong><a href="#codex">Codex</a><a href="#claude">Claude Code</a><a href="#workflow-skill">Full suite</a><a href="#skills">Specialists</a><a href="#updates">Updates</a><a href="#first-task">First task</a></aside>
         </div></section>
 
         <section class="cta"><div class="container cta-inner"><h2>Keep the protocol <em>portable.</em></h2><a class="button button-primary" href="https://github.com/mbourmaud/sillage-workflow">Inspect the source <span aria-hidden="true">↗</span></a></div></section>

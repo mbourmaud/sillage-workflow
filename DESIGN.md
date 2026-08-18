@@ -36,11 +36,20 @@ User-facing concepts are task, slice, evidence, review, handoff, and knowledge.
 Provider terms such as pull request, merge request, GitHub issue, or Jira ticket
 belong to adapters.
 
-## CLI behavior
+### Engineering doctrine before technology
 
-- Human-readable output is concise and actionable.
-- `--json` provides stable machine-readable output.
-- Validation commands are read-only unless their name explicitly denotes a
-  mutation.
-- Missing capabilities degrade explicitly; they are never silently simulated.
-- Destructive commands are absent from the core CLI.
+Sillage keeps a small invariant doctrine: design from observed pressure, make
+ownership and seams explicit, select patterns only when they reduce a real
+risk, test behavior at its real boundary, and make failure, security,
+compatibility, and recovery observable. Architecture, testing, DDD, interface,
+systems, security, platform, frontend, and data skills are progressive lenses;
+they load only when the task's risks require them. They do not mandate a
+language, framework, deployment topology, class model, or Clean Architecture.
+
+## Optional reference tooling
+
+The portable product is the skills and Markdown protocol. A project may add a
+CLI, JSON schema, task store, or host adapter for deterministic checks. Such
+tooling must remain optional: missing capabilities degrade explicitly and never
+silently simulate a check, approval, or external write. Human-readable output
+is concise; machine-readable output is stable when a tool provides it.

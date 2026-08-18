@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / Architecture"
+  short_description: "Choose architecture from observed change pressure"
+  default_prompt: "Use $architecture for an architecture or pattern decision."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / document-data"
+  short_description: "Sillage guidance for document-data"
+  default_prompt: "Use $document-data for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

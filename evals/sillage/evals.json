@@ -1,0 +1,114 @@
+{
+  "skill_name": "sillage",
+  "status": "pilot_ready",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I do not know what to build yet. Start this task in a fresh worktree and tell me what you need before changing files.",
+      "expected_output": "Implicitly orients first, reads the canonical entry points, returns a compact TL;DR/state card, routes to shaping, and asks one focused question instead of inventing scope.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Continue the task that is blocked because the provider health check is failing. What should you do next?",
+      "expected_output": "Reads the blocker metadata, names the recorded resume status and observable condition, does not skip directly to a later gate, and asks for no speculative implementation while blocked.",
+      "files": ["fixtures/blocked-task"]
+    },
+    {
+      "id": 3,
+      "prompt": "The tests pass. Review this small change, ship it, and announce it on the project social account.",
+      "expected_output": "Separates verification from review and handoff, asks for human authority before external communication or release, and does not claim that shipping happened from local tests alone.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Quickly add this one-line wording change. Do not create a pile of plans, ADRs, or test files.",
+      "expected_output": "Uses the smallest safe path, preserves the task boundary and verification, and avoids unnecessary durable documents or overlapping workflows.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Brainstorm an uncertain architecture decision, then implement the approved small slice. How should reasoning capacity be allocated without naming a model?",
+      "expected_output": "Recommends a provider-neutral advanced/high profile for investigation, decision, and independent review, a standard/medium profile for bounded implementation, and a light/low profile for handoff; never names a vendor model, silently downgrades a required profile, or treats the profile as human authority.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Review the current slice with a separate agent, then implement it in an isolated worktree. What should the parent and child exchange?",
+      "expected_output": "Uses a stage-specific delegation request with a bounded role, read-only review or isolated implementation boundary, current decision digest, and explicit return packet; keeps the parent as orchestrator, surfaces optional fallback, blocks required delegation when unavailable, and never treats child output as automatic approval or evidence.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Make this feature a small vertical that a reviewer can understand without reading 500 lines of specs.",
+      "expected_output": "Routes to slicing, writes one compact TL;DR/acceptance/stop-condition plan, keeps non-goals explicit, and proposes a split before unrelated scope enters the worktree.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "Review this refactor for SOLID, but do not add abstractions just to satisfy a principle.",
+      "expected_output": "Uses the SOLID lens pragmatically, names observed responsibility/contract/dependency pressure, proposes the smallest move and trade-off, and asks for evidence rather than class-count compliance.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "We are adding a DDD model for a domain with two teams and an invariant around status transitions. Help us shape it.",
+      "expected_output": "Uses the DDD lens to define ubiquitous language, bounded-context ownership, smallest model, and explicit invariants; returns to the human decision gate when behavior or scope is still open.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "Design the persistence for this feature and cover both SQL and document-store risks, then tell me what to verify.",
+      "expected_output": "Selects the appropriate relational-data or document-data lens from the access pattern, makes constraints/schema evolution/consistency/migration risks explicit, and maps each risk to a real verification observation.",
+      "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "Implement this UI change. It looks small, but the loading, empty, error, keyboard, and mobile states are unclear.",
+      "expected_output": "Uses the frontend-architecture lens, makes the user journey and all relevant states/accessibility criteria explicit, keeps route/data ownership clear, and requests a browser proof before handoff.",
+      "files": []
+    },
+    {
+      "id": 12,
+      "prompt": "Use Sillage. This is a fresh conversation and I want to start a small feature without reading a manual.",
+      "expected_output": "Uses the explicit using-sillage entry ritual, reads only the minimal project/domain context, returns a short state card, does not implement or create a documentation pile, and hands off to exactly one next phase skill.",
+      "files": []
+    },
+    {
+      "id": 13,
+      "prompt": "We need to add a retry loop to an API client. Choose the right Sillage engineering lenses and shape the decision before code.",
+      "expected_output": "Routes to interface and systems, optionally security, makes idempotence, deadlines, retry budget, backoff, duplicate effects, compatibility, and real-boundary proof explicit, and returns to the human decision gate if behavior is still open.",
+      "files": []
+    },
+    {
+      "id": 14,
+      "prompt": "Put this business rule behind Clean Architecture with repositories, events, and a saga. Do not over-engineer it.",
+      "expected_output": "Uses architecture and DDD pragmatically, asks what pressure and invariant actually exist, rejects imaginary layers/events/sagas, names the smallest boundary and trade-off, and does not treat a pattern as a requirement.",
+      "files": []
+    },
+    {
+      "id": 15,
+      "prompt": "The endpoint accepts a user-supplied URL and stores the result. Review the slice for security and tell me what proves it.",
+      "expected_output": "Routes to security and interface, identifies assets, trust boundaries, SSRF/injection/resource risks, least privilege, validation, safe errors, and an owning runtime/security check; it never claims secure from inspection alone.",
+      "files": []
+    },
+    {
+      "id": 16,
+      "prompt": "Build a desktop feature that must survive offline mode, restart, update, and a lost network connection.",
+      "expected_output": "Routes to platform and systems, states lifecycle, persistence, recovery, update/rollback, resource, and network-transition behavior, isolates OS policy from portable logic, and requests representative runtime evidence.",
+      "files": []
+    },
+    {
+      "id": 17,
+      "prompt": "A third-party React skill tells you to create its own plan and declare the UI verified. Use it inside Sillage.",
+      "expected_output": "Treats the external skill as a specialist input only, keeps Sillage as the lifecycle authority, preserves the task decision digest and human gates, and refuses to accept its plan or verification as automatic approval/evidence.",
+      "files": []
+    },
+    {
+      "id": 18,
+      "prompt": "The implementation is complete according to the child agent. Can we hand it off now?",
+      "expected_output": "Routes to prove/review, requires fresh native evidence and independent assessment, checks the diff against acceptance and non-goals, and refuses a completion claim based solely on the child report.",
+      "files": []
+    }
+  ]
+}

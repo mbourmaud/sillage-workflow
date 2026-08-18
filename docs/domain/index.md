@@ -8,12 +8,16 @@ owners: [maintainers]
 
 - **Project** — the product and repository context in which work occurs.
 - **Task** — one desired outcome with intent, scope, acceptance, and lifecycle.
+- **Task Card** — the compact Markdown resume point for a Task: TL;DR, intent,
+  decision, Slice, proof, review, handoff, and the next safe action. It is the
+  portable source of context; a task-store adapter may mirror it.
 - **Slice** — one cohesive, independently understandable part of a Task. An
   implementation Worktree has exactly one active Slice.
 - **Worktree** — an isolated workspace bound to a Slice. A Git worktree is one
   adapter, not the definition.
-- **Task Store** — the authoritative operational record. It may be local or
-  provided by GitHub, GitLab, Jira, Linear, or another adapter.
+- **Task Store** — an optional operational adapter for Task Cards. It may be
+  local or provided by GitHub, GitLab, Jira, Linear, or another system; its
+  absence never blocks the Markdown workflow.
 - **Durable Knowledge** — current product, design, domain, architecture,
   standard, runbook, or landmark-decision knowledge needed by future work.
 - **Evidence** — an addressable observation supporting an Acceptance Criterion.
@@ -22,6 +26,28 @@ owners: [maintainers]
   than the current human approval and carry the same decision digest. A project
   may add a stricter freshness window through its verification policy.
 - **Verification** — the argument that evidence proves the approved behavior.
+- **Skill Router** — the implicit `sillage` skill that selects one next phase
+  from the user's intent, current status, and worktree evidence.
+- **Specialist Lens** — a focused skill such as SOLID, DDD, frontend, data,
+  audit, migration, debugging, or test hygiene. It informs the current phase
+  and never creates a second lifecycle.
+- **Engineering Doctrine** — portable questions that apply across technology:
+  observed pressure, ownership, seams, dependency direction, behavior,
+  failure, security, compatibility, recovery, and proof.
+- **Architecture Lens** — architecture and pattern guidance selected from a
+  real change pressure; it never requires a layer, object model, or pattern.
+- **Testing Lens** — test-seam and risk-ownership guidance; it assigns each
+  risk a primary proof layer without optimizing for test count.
+- **Interface Lens** — contracts across HTTP, web, RPC, messages, files, or
+  commands, including semantics, failure, and compatible evolution.
+- **Systems Lens** — concurrency, time, networks, queues, resources, partial
+  failure, recovery, and observability.
+- **Security Lens** — assets, actors, trust boundaries, abuse cases, controls,
+  residual risk, and evidence; it never certifies security by inspection.
+- **Platform Lens** — runtime, process, OS, filesystem, packaging, lifecycle,
+  and resource constraints for desktop, mobile, CLI, service, or embedded work.
+- **Native Check** — the project's own test, typecheck, build, linter,
+  screenshot, runtime, or domain command used as verification evidence.
 - **Review** — an independent assessment of correctness, scope, safety, and
   maintainability.
 - **Handoff** — a self-contained outcome or resume point.

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / solid"
+  short_description: "Sillage guidance for solid"
+  default_prompt: "Use $solid for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

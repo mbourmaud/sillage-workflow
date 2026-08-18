@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / Start"
+  short_description: "Start Sillage in a fresh conversation"
+  default_prompt: "Use $using-sillage to start Sillage in this project."
+policy:
+  allow_implicit_invocation: true

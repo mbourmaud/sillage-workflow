@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / shape"
+  short_description: "Sillage guidance for shape"
+  default_prompt: "Use $shape for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

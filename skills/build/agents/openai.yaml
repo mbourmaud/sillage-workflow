@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sillage / build"
+  short_description: "Sillage guidance for build"
+  default_prompt: "Use $build for a bounded Sillage task."
+policy:
+  allow_implicit_invocation: true

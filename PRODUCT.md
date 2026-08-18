@@ -28,6 +28,16 @@ context.
 5. No language, forge, CI system, or package manager is privileged.
 6. Humans control decisions and consequential external actions.
 
+7. A project can use the workflow with portable Markdown skills and its own
+   native checks; no Sillage executable is required.
+
+8. A reviewer can understand a vertical from a short TL;DR and expand into
+   decisions and evidence only when needed.
+
+9. A project can apply durable, language-neutral engineering disciplines —
+   architecture, testing, domain modeling, interfaces, systems, security, and
+   platform design — without adopting a framework or prescribed topology.
+
 ## Non-goals
 
 - Autonomous product management or deployment.
@@ -35,3 +45,8 @@ context.
 - Mandatory multi-agent orchestration.
 - Generating documentation for every thought or experiment.
 - Maximizing test count or Markdown volume.
+- Requiring a Sillage CLI, JSON task store, Git provider, or plugin host.
+- Mandating DDD, SOLID, Clean Architecture, a design pattern, or a specific
+  test pyramid for every project.
+- Replacing specialist technical standards, security assessments, or platform
+  documentation with a generic checklist.
